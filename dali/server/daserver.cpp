@@ -52,8 +52,10 @@
 #include "daldap.hpp"
 #endif
 
+#ifndef _WIN32
 #include <sys/types.h>
 #include <pwd.h>
+#endif
 #include "jfile.hpp"
 #include "jargv.hpp"
 #include "deployutils.hpp"
@@ -141,6 +143,7 @@ public:
 }; 
 #endif
 
+#ifndef _WIN32
 void sighandler(int signum, siginfo_t *info, void *extra)
 {
     PROGLOG("Caught signal %d, %p", signum, info?info->si_addr:0);
@@ -168,6 +171,7 @@ int initDaemon()
     sigaction(SIGINT, &act, NULL);
     return 0;
 }
+#endif
 
 USE_JLIB_ALLOC_HOOK;
 
@@ -265,7 +269,7 @@ public:
 
 class CDaemonInfo{
 private:
-    passwd pwd;
+
     Owned<IPropertyTree> serverEnv;
 
     void openEnv(const char* envFile)
@@ -277,6 +281,8 @@ private:
         }
     }
 
+#ifndef _WIN32
+    passwd pwd;
     void getPW_PWD(const char* username)
     {
         struct passwd *result;
@@ -310,6 +316,12 @@ private:
             exit(EXIT_FAILURE);
         }
     }
+#else
+    void getPW_PWD(const char* username)
+    {
+
+    }
+#endif
 
 public:
     CDaemonInfo(const char* envFile)
@@ -330,6 +342,7 @@ public:
         return serverEnv;
     }
 
+#ifndef _WIN32
     uid_t getUID()
     {
         return pwd.pw_uid;
@@ -339,6 +352,17 @@ public:
     {
         return pwd.pw_gid;
     }
+#else
+    int getUID()
+    {
+        return 0;
+    }
+
+    int getGID()
+    {
+        return 0;
+    }
+#endif
 
     const char* getSetting(const char* setting)
     {
@@ -654,12 +678,14 @@ int main(int argc, const char* argv[])
 
         CDaemonInfo dinfo(cli.getEnvFile());
 
+#ifndef _WIN32
         if ( ! cli.inForeground() )
         {
             int ret = initDaemon();
             if (ret)
                 return ret;
         }
+#endif
         SocketEndpoint ep;
         SocketEndpointArray epa;
         ep.setLocalHost(DALI_SERVER_PORT);
