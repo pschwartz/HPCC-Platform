@@ -40,6 +40,8 @@ include_directories (
          ./../../system/security/shared 
          ./../../system/security/LdapSecurity 
          ./../../system/jlib 
+         ./../../common/environment
+         ./../../deployment/deployutils
          ${CMAKE_BINARY_DIR}
          ${CMAKE_BINARY_DIR}/oss
     )
@@ -63,5 +65,6 @@ target_link_libraries ( daserver
          hrpc 
          remote 
          dalibase 
+         deployutils
     )
 

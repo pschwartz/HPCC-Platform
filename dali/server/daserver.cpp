@@ -52,6 +52,11 @@
 #include "daldap.hpp"
 #endif
 
+#include <sys/types.h>
+#include <pwd.h>
+#include "jfile.hpp"
+#include "jargv.hpp"
+#include "deployutils.hpp"
 
 
 Owned<IPropertyTree> serverConfig;
@@ -136,36 +141,220 @@ public:
 }; 
 #endif
 
+void sighandler(int signum, siginfo_t *info, void *extra)
+{
+    PROGLOG("Caught signal %d, %p", signum, info?info->si_addr:0);
+    stopServer();
+    stopPerformanceMonitor();
+    exit(0);
+}
+
+int initDaemon()
+{
+    int ret = make_daemon(true);
+    if (ret)
+        return ret;
+
+    struct sigaction act;
+    sigset_t blockset;
+    sigemptyset(&blockset);
+    act.sa_mask = blockset;
+    act.sa_handler = SIG_IGN;
+    sigaction(SIGHUP, &act, NULL);
+
+    act.sa_flags = SA_SIGINFO;
+    act.sa_sigaction = &sighandler;
+    sigaction(SIGTERM, &act, NULL);
+    sigaction(SIGINT, &act, NULL);
+    return 0;
+}
+
 USE_JLIB_ALLOC_HOOK;
 
-int main(int argc, char* argv[])
+class CDaemonCLI
 {
-    InitModuleObjects();
-    NoQuickEditSection x;
-    try {
+private:
+    ArgvIterator iter;
+    StringBuffer name;
+    StringAttr optEnvFile;
+    StringAttr optCompName;
+    bool optForeground;
 
-        EnableSEHtoExceptionMapping();
-#ifndef __64BIT__
-        Thread::setDefaultStackSize(0x20000);
-#endif
-        setAllocHook(true);
+public:
+    CDaemonCLI(int argc, const char* argv[]): name(argv[0]),iter(argc, argv)
+    {
+        StringBuffer envFile = StringBuffer().append(CONFIG_DIR).append(PATHSEPSTR).append(ENV_XML_FILE);
+        optEnvFile.set(envFile.str());
+        optForeground = false;
+        optCompName.set(NULL);
+    }
 
-        rank_t myrank = 0;
-        if (argc==2) {
-            printf("daserver <myrank> <server_ip:port>* \n");
-            return 0;
+    void usage()
+    {
+        fprintf(stdout, "\nUsage:\n"
+            "    %s <options>\n"
+            "\nRequired Options:\n"
+            "  --name=<compName>  Name of the component to start.\n"
+            "\nOptional Options:\n"
+            "  --env=<EnvFile>    Environment file to use.\n"
+            "  -f                 Run in foreground.\n"
+            "  --version           Output version information.\n",
+            name.str());
+    }
+
+    bool inForeground()
+    {
+        return optForeground;
+    }
+
+    const char* getEnvFile()
+    {
+        return optEnvFile;
+    }
+
+    const char* getCompName()
+    {
+        return optCompName;
+    }
+
+    bool parseCommandLineOptions()
+    {
+        if (iter.done())
+        {
+            usage();
+            return false;
         }
-        else if (argc>=3) {
-            myrank = atoi(argv[1]);
-            if (myrank>=(unsigned)(argc-2)) {
-                printf("incorrect rank\n");
-                return 0;
+        bool boolValue;
+        for(; !iter.done(); iter.next())
+        {
+            const char * arg = iter.query();
+            if ( iter.matchOption(optEnvFile, "--env"))
+            {
+                if(!checkFileExists(optEnvFile))
+                {
+                    return false;
+                }
+            }
+            else if( iter.matchOption(optCompName, "--name"))
+            {
+            }
+            else if( iter.matchFlag(optForeground, "-f"))
+            {
+                optForeground = true;
+            }
+            else if (strcmp(arg, "--help")==0)
+            {
+                usage();
+                return false;
+            }
+            else if (iter.matchFlag(boolValue, "--version"))
+            {
+                fprintf(stdout, "%s\n", BUILD_TAG);
+                return false;
             }
         }
-	
-        Owned<IFile> sentinelFile = createSentinelTarget();
-        removeSentinelFile(sentinelFile);
-	
+
+        if (getCompName() == NULL)
+        {
+            usage();
+            return false;
+        }
+        return true;
+    }
+};
+
+class CDaemonInfo{
+private:
+    passwd pwd;
+    Owned<IPropertyTree> serverEnv;
+
+    void openEnv(const char* envFile)
+    {
+        OwnedIFile envIFile = createIFile(envFile);
+        if ( envIFile->exists())
+        {
+            serverEnv.setown(createPTreeFromXMLFile(envFile));
+        }
+    }
+
+    void getPW_PWD(const char* username)
+    {
+        struct passwd *result;
+        char *buf;
+        size_t bufsize;
+        int s;
+
+        bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+        if (bufsize == -1)          /* Value was indeterminate */
+            bufsize = 16384;        /* Should be more than enough */
+
+        buf = (char*)malloc(bufsize);
+        if (buf == NULL)
+        {
+            perror("malloc");
+            exit(EXIT_FAILURE);
+        }
+
+        s = getpwnam_r(username, &pwd, buf, bufsize, &result);
+        if (result == NULL)
+        {
+            if (s == 0)
+            {
+                printf("Not found\n");
+            }
+            else
+            {
+                errno = s;
+                perror("getpwnam_r");
+            }
+            exit(EXIT_FAILURE);
+        }
+    }
+
+public:
+    CDaemonInfo(const char* envFile)
+    {
+        openEnv(envFile);
+        getPW_PWD(getSetting("user"));
+    }
+
+    StringBuffer getEnvXML()
+    {
+        StringBuffer envXML;
+        toXML(serverEnv, envXML);
+        return envXML;
+    }
+
+    Owned<IPropertyTree> getPtree()
+    {
+        return serverEnv;
+    }
+
+    uid_t getUID()
+    {
+        return pwd.pw_uid;
+    }
+
+    gid_t getGID()
+    {
+        return pwd.pw_gid;
+    }
+
+    const char* getSetting(const char* setting)
+    {
+        StringBuffer xpath= StringBuffer().append("EnvSettings/").append(setting);
+        return serverEnv->queryProp(xpath.str());
+    }
+};
+
+int startDali(rank_t &myrank, SocketEndpoint& ep, SocketEndpointArray& epa, CDaemonCLI cli, CDaemonInfo dinfo)
+{
+    try{
+        StringBuffer logName;
+        StringBuffer auditDir;
+        StringBuffer compname = cli.getCompName();
+        generateConfigs(dinfo.getEnvXML(), compname.str(), dinfo.getSetting("runtime"));
+
         OwnedIFile confIFile = createIFile(DALICONF);
         if (confIFile->exists())
             serverConfig.setown(createPTreeFromXMLFile(DALICONF));
@@ -178,11 +367,13 @@ int main(int argc, char* argv[])
         }
 
         DBGLOG("Build %s", BUILD_TAG);
+        PROGLOG("UID: %d", dinfo.getUID());
+        PROGLOG("GID: %d", dinfo.getGID());
 
         if (serverConfig)
         {
             StringBuffer dataPath;
-            if (getConfigurationDirectory(serverConfig->queryPropTree("Directories"),"data","dali",serverConfig->queryProp("@name"),dataPath)) 
+            if (getConfigurationDirectory(serverConfig->queryPropTree("Directories"),"data","dali",serverConfig->queryProp("@name"),dataPath))
                 serverConfig->setProp("@dataPath",dataPath.str());
             else
                 serverConfig->getProp("@dataPath",dataPath);
@@ -201,7 +392,7 @@ int main(int argc, char* argv[])
 
             // JCSMORE remoteBackupLocation should not be a property of SDS section really.
             StringBuffer mirrorPath;
-            if (!getConfigurationDirectory(serverConfig->queryPropTree("Directories"),"mirror","dali",serverConfig->queryProp("@name"),mirrorPath)) 
+            if (!getConfigurationDirectory(serverConfig->queryPropTree("Directories"),"mirror","dali",serverConfig->queryProp("@name"),mirrorPath))
                 serverConfig->getProp("SDS/@remoteBackupLocation",mirrorPath);
 
             if (mirrorPath.length())
@@ -253,8 +444,8 @@ int main(int argc, char* argv[])
                             if (mirrorPath.length()<=2 || !isPathSepChar(mirrorPath.charAt(0)) || !isPathSepChar(mirrorPath.charAt(1)))
                                 rfn.setLocalPath(mirrorPath.str());
                             else
-                                rfn.setRemotePath(mirrorPath.str());                
-                            
+                                rfn.setRemotePath(mirrorPath.str());
+
                             if (!rfn.getPort() && !rfn.isLocal())
                             {
                                 StringBuffer mountPoint;
@@ -290,7 +481,7 @@ int main(int argc, char* argv[])
                             OwnedIFile iFileBackup = createIFile(backupCheck.str());
                             if (iFileBackup->exists())
                             {
-                                PROGLOG("remoteBackupLocation and dali data path point to same location! : %s", mirrorPath.str()); 
+                                PROGLOG("remoteBackupLocation and dali data path point to same location! : %s", mirrorPath.str());
                                 iFileDataDir->remove();
                                 return 0;
                             }
@@ -341,26 +532,13 @@ int main(int argc, char* argv[])
             }
         }
 #endif
-
-        SocketEndpoint ep;
-        SocketEndpointArray epa;
-        if (argc==1) {
-            ep.setLocalHost(DALI_SERVER_PORT);
-            epa.append(ep);
-        }
-        else {
-            for (unsigned i=2;i<(unsigned)argc;i++) {
-                ep.set(argv[i],DALI_SERVER_PORT);
-                epa.append(ep);
-            }
-        }
         unsigned short myport = epa.item(myrank).port;
         startMPServer(myport,true);
         setMsgLevel(serverConfig->getPropInt("SDS/@msgLevel", 100));
-        startLogMsgChildReceiver(); 
+        startLogMsgChildReceiver();
         startLogMsgParentReceiver();
 
-        IGroup *group = createIGroup(epa); 
+        IGroup *group = createIGroup(epa);
         initCoven(group,serverConfig);
         group->Release();
         epa.kill();
@@ -379,7 +557,7 @@ int main(int argc, char* argv[])
             auditDir.set(lf->queryLogDir());
         }
 
-// SNMP logging     
+// SNMP logging
         bool enableSNMP = serverConfig->getPropBool("SDS/@enableSNMP");
         if (serverConfig->getPropBool("SDS/@enableSysLog",true))
             UseSysLogForOperatorMessages();
@@ -442,7 +620,6 @@ int main(int argc, char* argv[])
 
         }
         if (ok) {
-            writeSentinelFile(sentinelFile);
             covenMain();
             removeAbortHandler(actionOnAbort);
         }
@@ -451,6 +628,51 @@ int main(int argc, char* argv[])
         stopPerformanceMonitor();
     }
     catch (IException *e) {
+        EXCLOG(e, "Exception");
+    }
+    return 0;
+}
+
+int main(int argc, const char* argv[])
+{
+    InitModuleObjects();
+    NoQuickEditSection x;
+    CDaemonCLI cli(argc, argv);
+    if(! cli.parseCommandLineOptions() )
+    {
+        exit(0);
+    }
+    try
+    {
+        EnableSEHtoExceptionMapping();
+#ifndef __64BIT__
+        Thread::setDefaultStackSize(0x20000);
+#endif
+        setAllocHook(true);
+
+        rank_t myrank = 0;
+
+        CDaemonInfo dinfo(cli.getEnvFile());
+
+        if ( ! cli.inForeground() )
+        {
+            int ret = initDaemon();
+            if (ret)
+                return ret;
+        }
+        SocketEndpoint ep;
+        SocketEndpointArray epa;
+        ep.setLocalHost(DALI_SERVER_PORT);
+        epa.append(ep);
+
+        int d = startDali(myrank, ep, epa, cli, dinfo);
+        if ( d != 0 )
+        {
+            return d;
+        }
+    }
+    catch (IException *e)
+    {
         EXCLOG(e, "Exception");
     }
     UseSysLogForOperatorMessages(false);

@@ -3666,3 +3666,83 @@ bool validateEnv(IConstEnvironment* pConstEnv, bool abortOnException)
 
   return true;
 }
+
+bool generateConfigs(StringBuffer envXML, const char* compName, const char* outDir)
+{
+  StringBuffer sb;
+  Owned<IEnvironmentFactory> factory = getEnvironmentFactory();
+  Owned<IConstEnvironment> pConstEnv = factory->loadLocalEnvironment(envXML.str());
+  StringBuffer ip;
+  queryHostIP().getIpText(ip);
+
+  try
+  {
+    CConfigEngCallback callback(false, true);
+    Owned<IEnvDeploymentEngine> configGenMgr;
+    Owned<IPropertyTree> pEnvRoot = &pConstEnv->getPTree();
+    const char* inDir = pEnvRoot->queryProp(XML_TAG_ENVSETTINGS"/path");
+    StringBuffer sb;
+
+    if (!inDir || !*inDir)
+      sb.clear().append(COMPONENTFILES_DIR).append("/configxml/");
+    else
+      sb.clear().append(inDir).append("/componentfiles/configxml");
+
+    if (!outDir || !*outDir)
+      outDir = ".";
+
+    configGenMgr.setown(createConfigGenMgr(*pConstEnv, callback, NULL, sb.str(), outDir, compName, NULL, ip.str()));
+    configGenMgr->deploy(DEFLAGS_CONFIGFILES, DEBACKUP_NONE, false, false);
+  }
+  catch(IException* e)
+  {
+    StringBuffer sb, newMsg, errMsg;
+    e->errorMessage(sb);
+    String str(sb.trim());
+    String* sub1 = str.substring(str.lastIndexOf('[') + 1, str.length() - 1);
+    if (sub1)
+    {
+      String* sub2 = sub1->substring(sub1->indexOf(':') + 1, sub1->length());
+      if (sub2)
+      {
+        StringBuffer sb2(*sub2);
+        sb2.trim();
+        sb2.replaceString("  ", " ");
+        errMsg.append("Error: ").append(sb2.str()).append("\n");
+        delete sub2;
+      }
+
+      delete sub1;
+    }
+
+    if (errMsg.length())
+    {
+      sb.replaceString(": ", "=");
+      try
+      {
+        Owned<IProperties> pParams = createProperties();
+        pParams->loadProps(sb.str());
+
+        const char* ptype = pParams->queryProp("Process type");
+        if (ptype)
+          newMsg.appendf("Component Type: %s\n", ptype);
+
+        const char* cname = pParams->queryProp("Component");
+        if (cname)
+          newMsg.appendf("Component Name: %s\n", cname);
+      }
+      catch(IException* e1)
+      {
+        e1->Release();
+        throw e;
+      }
+
+      e->Release();
+      throw MakeStringException(-1, "%s", newMsg.append(errMsg.str()).str());
+    }
+    else
+      throw e;
+  }
+
+  return true;
+}
