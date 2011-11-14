@@ -175,6 +175,19 @@ int initDaemon()
 
 USE_JLIB_ALLOC_HOOK;
 
+class  CCLIOption{
+private:
+
+public:
+};
+
+class ICLI{
+private:
+
+public:
+    virtual void addOption() = 0;
+};
+
 class CDaemonCLI
 {
 private:
