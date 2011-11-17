@@ -179,15 +179,8 @@ int initDaemon()
 
 USE_JLIB_ALLOC_HOOK;
 
-class CCLIOptionCommon{
-public:
-    virtual const char* getName() = 0;
-    virtual const char* getDescription() = 0;
-    virtual const char* getDefValue() = 0;
-};
-
 template <typename T>
-class  CCLIOption : public CCLIOptionCommon{
+class  CCLIOption{
 private:
     T *optType;
     const char* optName;
@@ -227,30 +220,23 @@ public:
 
 };
 
-class CCLIOptionFactory
+interface ICLI : extends IInterface
 {
-public:
-    template <typename T>
-    static CCLIOption<T> * createCLIOption(const char* name, const char* description, const char* defValue)
-    {
-        CCLIOption<T> *option = new CCLIOption<T>(name, description, defValue);
-        return option;
-    }
+    virtual void addOption() = 0;
+    virtual void getHelp() = 0;
+    virtual void parseCLI() = 0;
 };
 
-class CCLI
+class CCLI : public CInterface, implements ICLI
 {
 public:
-    template <typename T>
-    void addOption(CCLIOption<T> option)
-    {
-            this->optMap.insert(option.getPair());
-    }
-    void generateHelp(){}
+    IMPLEMENT_IINTERFACE;
+    void addOption();
+    void getHelp();
+    void parseCLI();
 
 private:
-    typedef std::map<const char*, CCLIOptionCommon > CLIOptMap;
-    CLIOptMap optMap;
+
 };
 
 
