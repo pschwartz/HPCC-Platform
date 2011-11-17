@@ -60,6 +60,10 @@
 #include "jargv.hpp"
 #include "deployutils.hpp"
 
+#include <map>
+
+using namespace std;
+
 
 Owned<IPropertyTree> serverConfig;
 static IArrayOf<IDaliServer> servers;
@@ -175,18 +179,85 @@ int initDaemon()
 
 USE_JLIB_ALLOC_HOOK;
 
-class  CCLIOption{
-private:
-
+class CCLIOptionCommon{
 public:
+    virtual const char* getName() = 0;
+    virtual const char* getDescription() = 0;
+    virtual const char* getDefValue() = 0;
 };
 
-class ICLI{
+template <typename T>
+class  CCLIOption : public CCLIOptionCommon{
 private:
+    T *optType;
+    const char* optName;
+    const char* optDescription;
+    const char* optDefValue;
 
 public:
-    virtual void addOption() = 0;
+    CCLIOption(const char* name,
+               const char* description,
+               const char* defValue):
+                optName(name),
+                optDescription(description),
+                optDefValue(defValue)
+    {
+        optType = new T();
+    }
+
+    T getType()
+    {
+        return &optType;
+    }
+
+    const char* getName()
+    {
+        return optName;
+    }
+
+    const char* getDescrption()
+    {
+        return optDescription;
+     }
+
+    const char* getDefValue()
+    {
+        return optDefValue;
+    }
+
 };
+
+class CCLIOptionFactory
+{
+public:
+    template <typename T>
+    static CCLIOption<T> * createCLIOption(const char* name, const char* description, const char* defValue)
+    {
+        CCLIOption<T> *option = new CCLIOption<T>(name, description, defValue);
+        return option;
+    }
+};
+
+class CCLI
+{
+public:
+    template <typename T>
+    void addOption(CCLIOption<T> option)
+    {
+            this->optMap.insert(option.getPair());
+    }
+    void generateHelp(){}
+
+private:
+    typedef std::map<const char*, CCLIOptionCommon > CLIOptMap;
+    CLIOptMap optMap;
+};
+
+
+
+
+
+
 
 class CDaemonCLI
 {
