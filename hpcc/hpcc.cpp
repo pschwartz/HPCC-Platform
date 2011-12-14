@@ -1,5 +1,6 @@
 #include "build-config.h"
 #include "platform.h"
+#include "jlog.hpp"
 #include "jlib.hpp"
 #include "jargv.hpp"
 
@@ -11,148 +12,197 @@ using namespace std;
 
 enum CLIOptionType
 {
-    CLISTRINGATTR,
-    CLIBOOL,
-    CLIUNSIGNED,
-    CLISTRINGBUFFER
+    CLIFlag,
+    CLIOption,
+    CLIPath
 };
 
-enum CLIOptionLevel
+class CCLIChain;
+
+interface ICLIOption
 {
-    CLIGlobal,
-    CLILocal
+    virtual void getUsageNameString(StringBuffer &usageString) = 0;
+    virtual void getUsageFlagString(StringBuffer &usageString) = 0;
+    virtual void setValue(const char* value) = 0;
+    virtual void setValue(StringAttr value) = 0;
+    virtual const char* getValue() = 0;
+    virtual bool isRequired() = 0;
+    virtual bool checkIterator(ArgvIterator &iter) = 0;
 };
 
-
-interface ICLIOption : extends IInterface
-{
-    virtual const char* getDescription() = 0;
-    virtual const char* getKey() = 0;
-    virtual CLIOptionLevel getLevel() = 0;
-    virtual void setDescription(const char*) = 0;
-    virtual void setKey(const char*) = 0;
-    virtual void setLevel(CLIOptionLevel) = 0;
-};
+#ifndef CLI_FLAGSTRING
+#define CLI_FLAGSTRING "-"
+#endif
+#ifndef CLI_OPTIONSTRING
+#define CLI_OPTIONSTRING "--"
+#endif
 
 class CCLIOption : public CInterface, implements ICLIOption
 {
-public:
-    IMPLEMENT_IINTERFACE;
-
-
-    const char* getDescription()
+    friend ostream & operator<<(ostream& os, const CCLIOption& _cli)
     {
-        return description;
-    }
-
-    void setDescription(const char* desc)
-    {
-        description = desc;
-    }
-
-    const char* getKey()
-    {
-        return key;
-    }
-
-    void setKey(const char* _key)
-    {
-        key = _key;
-    }
-
-    CLIOptionLevel getLevel()
-    {
-        return level;
-    }
-
-    void setLevel(CLIOptionLevel _level)
-    {
-        level = _level;
-    }
-
-protected:
-    const char* key;
-    const char* description;
-    CLIOptionLevel level;
-
-};
-
-template <typename T>
-class TCLIOption : public CCLIOption
-{
-public:
-    /*
-    TCLIOption(T &_value, const char* _key, const char* _description, T _defaultValue=null, CLIOptionLevel _level=CLIGlobal):
-        value(_value), key(_key), description(_description), defaultValue(_defaultValue), level(_level)
-    {
-
-    }
-    */
-    TCLIOption(const char* _key, const char* _description, CLIOptionLevel _level=CLIGlobal)
-    {
-        key = _key;
-        description = _description;
-        level = _level;
-    }
-
-    void set(pair<const char*, T> kvpair)
-    {
-        key = kvpair.first();
-        value = kvpair.value();
-    }
-
-    pair<const char*, T> get()
-    {
-        if(!value)
-        {
-            value = defaultVal;
-        }
-        return pair<const char*, T>(key,value);
+        os<<_cli._value;
+        return os;
     }
 
 private:
-    T *value;
-    T defaultVal;
-};
+    StringBuffer _optFlag;
+    StringBuffer _optName;
 
-class CCLIOptionFactory
-{
 public:
-    static CCLIOption* getCLIOption(CLIOptionType type, const char* key, const char* description, CLIOptionLevel level=CLIGlobal)
+    IMPLEMENT_IINTERFACE;
+    CCLIOption(const char* flag, const char* name, const char* description,
+            CLIOptionType type, const char* defaultValue, bool required)
     {
-        switch(type)
-        {
-        case CLISTRINGATTR: return new TCLIOption<StringAttr>(key, description, level);
-        case CLIBOOL: return new TCLIOption<bool>(key, description, level);
-        case CLIUNSIGNED: return new TCLIOption<unsigned>(key, description, level);
-        case CLISTRINGBUFFER: return new TCLIOption<StringBuffer>(key, description, level);
-        }
+        _flag.set(flag);
+        _name.set(name);
+        _description.set(description);
+        _type = type;
+        _defaultValue.set(defaultValue);
+        _required = required;
+        _optFlag.clear().append(CLI_FLAGSTRING).append(_flag);
+        _optName.clear().append(CLI_OPTIONSTRING).append(_name);
     }
 
+    void getUsageFlagString(StringBuffer &usageString)
+    {
+        usageString.clear();
+        usageString.append("  ").append(_optFlag);
+        if ( _type != CLIFlag )
+            usageString.append("=<").append(_name).append(">");
+        usageString.append("  ").append(_description);
+        if (_required)
+            usageString.append(" (required)");
+    }
+
+    void getUsageNameString(StringBuffer &usageString)
+    {
+        usageString.clear();
+        usageString.append("  ").append(_optName);
+        if ( _type != CLIFlag )
+            usageString.append("=<").append(_name).append(">");
+        usageString.append("  ").append(_description);
+        if (_required)
+            usageString.append(" (required)");
+    }
+
+    bool checkIterator(ArgvIterator &iter)
+    {
+        if (iter.done())
+        {
+            return false;
+        }
+
+        if ( _type == CLIOption )
+        {
+            if(iter.matchOption(_value, _optName))
+            {
+                cout<<"Found Option: "<<_name<<endl;
+                return true;
+            }
+
+            if(iter.matchFlag(_value, _optFlag))
+            {
+                cout<<"Found Flag: "<<_name<<endl;
+                return true;
+            }
+        }else if (_type == CLIFlag )
+        {
+            bool hld;
+            if(iter.matchFlag(hld, _optName))
+            {
+                cout<<"Found Option: "<<_name<<endl;
+            }
+
+            if(iter.matchFlag(hld, _optFlag))
+            {
+                cout<<"Found Flag: "<<_name<<endl;
+            }
+            _value.clear();
+            if ( hld )
+            {
+                _value.set("1");
+                return true;
+            }
+            else
+            {
+                _value.set("0");
+                return true;
+            }
+            return false;
+        }else{
+
+        }
+        return false;
+    }
+
+    inline void setValue(const char* value) { _value.set(value); }
+    inline void setValue(StringAttr value) { _value.set(value); }
+    inline const char* getValue(){ return (const char*) _value; }
+    inline bool isRequired(){ return _required == true; }
+
+    void operator=(const char* in)
+    {
+        setValue(in);
+    }
+
+    virtual ~CCLIOption()
+    {
+    }
+
+protected:
+    StringAttr _flag;
+    StringAttr _name;
+    StringAttr _description;
+    StringAttr _defaultValue;
+    StringAttr _value;
+    bool _required;
+    bool _Set;
+    CLIOptionType _type;
+    CCLIChain* _chain;
 };
 
-#define StingAttrOption(x,y) CCLIOptionFactory::getCLIOption(CLISTRINGATTR,x,y)
-#define BoolOption(x,y) CCLIOptionFactory::getCLIOption(CLIBOOL,x,y)
-#define UnsignedOption(x,y) CCLIOptionFactory::getCLIOption(CLIUNSIGNED,x,y)
-#define StingBufferOption(x,y) CCLIOptionFactory::getCLIOption(CLISTRINGBUFFER,x,y)
-
-
-class CLIChain
+interface ICLIChain
 {
+
+};
+
+class CCLIChain : public CInterface, implements ICLIChain
+{
+public:
+    IMPLEMENT_IINTERFACE;
 
 };
 
 class CLI
 {
-    virtual CLIChain* getChain() = 0;
-    virtual void addChain(CLIChain &chain) = 0;
+    virtual CCLIChain* getChain() = 0;
+    virtual void addChain(CCLIChain &chain) = 0;
     virtual void validateChain(const char** argv, int argc) = 0;
-
 };
 
 int main(int argc, const char** argv)
 {
-    CCLIOption *opt = BoolOption("OPT1", "This is a test.");
-    cout<<"OPT: "<<opt->getKey()<<" - "<<opt->getDescription()<<" - L:"<<opt->getLevel()<<endl;
+    InitModuleObjects();
+    queryStderrLogMsgHandler()->setMessageFields(0);
+    CCLIOption bo("h","help", "Display Help", CLIFlag, NULL, false);
+    CCLIOption bo2("n","node", "Display Help", CLIOption, NULL, false);
+
+    ArgvIterator ai(argc, argv);
+    if(ai.done())
+        return 1;
+    for(; !ai.done(); ai.next())
+    {
+        cout<<"argv "<<ai.query()<<endl;
+        if ( bo.checkIterator(ai) )
+        {
+            cout<<"Option Value1: "<<bo<<endl;
+        }
+        if ( bo2.checkIterator(ai) )
+        {
+            cout<<"Option Value2: "<<bo2<<endl;
+        }
+    }
+    releaseAtoms();
     return 0;
 }
