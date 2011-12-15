@@ -638,7 +638,6 @@ int startDali(rank_t &myrank, SocketEndpoint& ep, SocketEndpointArray& epa, CDae
         epa.kill();
 
 // Audit logging
-        StringBuffer auditDir;
         {
             Owned<IComponentLogFileCreator> lf = createComponentLogFileCreator(serverConfig, "dali");
             lf->setLogDirSubdir("audit");//add to tail of config log dir
