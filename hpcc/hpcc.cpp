@@ -3,6 +3,7 @@
 #include "jlog.hpp"
 #include "jlib.hpp"
 #include "jargv.hpp"
+#include "jsuperhash.hpp"
 
 #include <iostream>
 #include <utility>
@@ -101,15 +102,28 @@ public:
                 return true;
             }
 
+            if(iter.matchOption(_value, _name))
+            {
+                cout<<"Found Option: "<<_name<<endl;
+                return true;
+            }
+
             if(iter.matchFlag(_value, _optFlag))
             {
                 cout<<"Found Flag: "<<_name<<endl;
                 return true;
             }
+
+
         }else if (_type == CLIFlag )
         {
             bool hld;
             if(iter.matchFlag(hld, _optName))
+            {
+                cout<<"Found Option: "<<_name<<endl;
+            }
+
+            if(iter.matchFlag(hld, _name))
             {
                 cout<<"Found Option: "<<_name<<endl;
             }
@@ -138,8 +152,10 @@ public:
 
     inline void setValue(const char* value) { _value.set(value); }
     inline void setValue(StringAttr value) { _value.set(value); }
-    inline const char* getValue(){ return (const char*) _value; }
+    inline const char* getValue(){ return _value; }
     inline bool isRequired(){ return _required == true; }
+
+    const char *queryFindString() const { return (const char*) _name; }
 
     void operator=(const char* in)
     {
@@ -164,13 +180,55 @@ protected:
 
 interface ICLIChain
 {
-
+    virtual void addLink(CCLIOption &opt) = 0;
+    virtual void removeLink(StringAttr name) = 0;
+    virtual bool runChain(ArgvIterator &iter) = 0;
+    virtual StringAttr getValue(StringAttr name) = 0;
 };
 
 class CCLIChain : public CInterface, implements ICLIChain
 {
 public:
     IMPLEMENT_IINTERFACE;
+    void addLink(CCLIOption &opt)
+    {
+        _chain.add(opt);
+    }
+
+    void removeLink(StringAttr name)
+    {
+        _chain.remove((const char*) name);
+    }
+
+    bool runChain(ArgvIterator &iter)
+    {
+        SuperHashIteratorOf<CCLIOption> SHiter(_chain);
+        ForEach(iter)
+        {
+            ForEach(SHiter)
+            {
+                if ( SHiter.query().checkIterator(iter) )
+                {
+                    cout<<"Option Name: "<<SHiter.query().queryFindString();
+                    cout<<" - Value: "<<SHiter.query()<<endl;
+                }
+            }
+        }
+    }
+
+    StringAttr getValue(StringAttr name)
+    {
+        CCLIOption *opt =  _chain.find(name);
+        return opt->getValue();
+    }
+
+    int getCount()
+    {
+        return _chain.count();
+    }
+
+protected:
+    StringSuperHashTableOf<CCLIOption> _chain;
 
 };
 
@@ -187,22 +245,15 @@ int main(int argc, const char** argv)
     queryStderrLogMsgHandler()->setMessageFields(0);
     CCLIOption bo("h","help", "Display Help", CLIFlag, NULL, false);
     CCLIOption bo2("n","node", "Display Help", CLIOption, NULL, false);
+    CCLIChain c1;
+
+    c1.addLink(bo);
+    c1.addLink(bo2);
 
     ArgvIterator ai(argc, argv);
-    if(ai.done())
-        return 1;
-    for(; !ai.done(); ai.next())
-    {
-        cout<<"argv "<<ai.query()<<endl;
-        if ( bo.checkIterator(ai) )
-        {
-            cout<<"Option Value1: "<<bo<<endl;
-        }
-        if ( bo2.checkIterator(ai) )
-        {
-            cout<<"Option Value2: "<<bo2<<endl;
-        }
-    }
+    c1.runChain(ai);
+    cout<<"bo value: "<<c1.getValue("help")<<endl;
+    cout<<"bo2 value: "<<c1.getValue("node")<<endl;
     releaseAtoms();
     return 0;
 }
