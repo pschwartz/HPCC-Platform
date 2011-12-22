@@ -18,6 +18,13 @@ enum CLIOptionType
     CLIPath
 };
 
+enum CLIOptionAction
+{
+    CLINone,
+    CLIStop,
+    CLIRunChain
+};
+
 class CCLIChain;
 
 interface ICLIOption
@@ -28,6 +35,8 @@ interface ICLIOption
     virtual void setValue(StringAttr value) = 0;
     virtual const char* getValue() = 0;
     virtual bool isRequired() = 0;
+    virtual CLIOptionAction getAction() = 0;
+    virtual bool isSet() = 0;
     virtual bool checkIterator(ArgvIterator &iter) = 0;
 };
 
@@ -53,7 +62,7 @@ private:
 public:
     IMPLEMENT_IINTERFACE;
     CCLIOption(const char* flag, const char* name, const char* description,
-            CLIOptionType type, const char* defaultValue, bool required)
+            CLIOptionType type, const char* defaultValue, bool required, CLIOptionAction action=CLINone)
     {
         _flag.set(flag);
         _name.set(name);
@@ -61,8 +70,10 @@ public:
         _type = type;
         _defaultValue.set(defaultValue);
         _required = required;
+        _action = action;
         _optFlag.clear().append(CLI_FLAGSTRING).append(_flag);
         _optName.clear().append(CLI_OPTIONSTRING).append(_name);
+        _Set = false;
     }
 
     void getUsageFlagString(StringBuffer &usageString)
@@ -96,46 +107,31 @@ public:
 
         if ( _type == CLIOption )
         {
-            if(iter.matchOption(_value, _optName))
+            iter.matchOption(_value, _optName);
+            iter.matchFlag(_value, _optFlag);
+
+            //Add flag to run this one.
+            iter.matchOption(_value, _name);
+
+            if( !_value.isEmpty() )
             {
-                cout<<"Found Option: "<<_name<<endl;
+                _Set=true;
                 return true;
             }
-
-            if(iter.matchOption(_value, _name))
-            {
-                cout<<"Found Option: "<<_name<<endl;
-                return true;
-            }
-
-            if(iter.matchFlag(_value, _optFlag))
-            {
-                cout<<"Found Flag: "<<_name<<endl;
-                return true;
-            }
-
-
         }else if (_type == CLIFlag )
         {
             bool hld;
-            if(iter.matchFlag(hld, _optName))
-            {
-                cout<<"Found Option: "<<_name<<endl;
-            }
+            iter.matchFlag(hld, _optName);
+            iter.matchFlag(hld, _optFlag);
 
-            if(iter.matchFlag(hld, _name))
-            {
-                cout<<"Found Option: "<<_name<<endl;
-            }
+            //Add flag to run this one.
+            iter.matchFlag(hld, _name);
 
-            if(iter.matchFlag(hld, _optFlag))
-            {
-                cout<<"Found Flag: "<<_name<<endl;
-            }
             _value.clear();
             if ( hld )
             {
                 _value.set("1");
+                _Set=true;
                 return true;
             }
             else
@@ -145,7 +141,7 @@ public:
             }
             return false;
         }else{
-
+            //ToDo: implement MatchPathFlag logic.
         }
         return false;
     }
@@ -154,6 +150,8 @@ public:
     inline void setValue(StringAttr value) { _value.set(value); }
     inline const char* getValue(){ return _value; }
     inline bool isRequired(){ return _required == true; }
+    inline CLIOptionAction getAction() { return _action; }
+    inline bool isSet() { return _Set == true; }
 
     const char *queryFindString() const { return (const char*) _name; }
 
@@ -174,25 +172,29 @@ protected:
     StringAttr _value;
     bool _required;
     bool _Set;
+    CLIOptionAction _action;
     CLIOptionType _type;
     CCLIChain* _chain;
 };
 
 interface ICLIChain
 {
-    virtual void addLink(CCLIOption &opt) = 0;
+    virtual void addLink(CCLIOption &opt, bool end) = 0;
     virtual void removeLink(StringAttr name) = 0;
     virtual bool runChain(ArgvIterator &iter) = 0;
     virtual StringAttr getValue(StringAttr name) = 0;
+    virtual void setEnd(StringAttr name) = 0;
 };
 
 class CCLIChain : public CInterface, implements ICLIChain
 {
 public:
     IMPLEMENT_IINTERFACE;
-    void addLink(CCLIOption &opt)
+    void addLink(CCLIOption &opt, bool end=false)
     {
         _chain.add(opt);
+        if( end )
+            setEnd(opt.queryFindString());
     }
 
     void removeLink(StringAttr name)
@@ -211,6 +213,13 @@ public:
                 {
                     cout<<"Option Name: "<<SHiter.query().queryFindString();
                     cout<<" - Value: "<<SHiter.query()<<endl;
+                    cout<<"Act: "<<SHiter.query().getAction()<<endl;
+                    cout<<"Set: "<<SHiter.query().isSet()<<endl;
+                    if ( SHiter.query().getAction()==CLIStop && SHiter.query().isSet() )
+                    {
+                        cout<<"Found Stop Point! : "<<SHiter.query().queryFindString()<<endl;
+                        return true;
+                    }
                 }
             }
         }
@@ -227,8 +236,15 @@ public:
         return _chain.count();
     }
 
+    void setEnd(StringAttr name)
+    {
+        _end.set(name);
+    }
+
+
 protected:
     StringSuperHashTableOf<CCLIOption> _chain;
+    StringAttr _end;
 
 };
 
@@ -243,17 +259,19 @@ int main(int argc, const char** argv)
 {
     InitModuleObjects();
     queryStderrLogMsgHandler()->setMessageFields(0);
-    CCLIOption bo("h","help", "Display Help", CLIFlag, NULL, false);
+    CCLIOption bo("h","help", "Display Help", CLIFlag, NULL, false, CLIStop);
     CCLIOption bo2("n","node", "Display Help", CLIOption, NULL, false);
     CCLIChain c1;
 
     c1.addLink(bo);
-    c1.addLink(bo2);
+    c1.addLink(bo2, true);
 
     ArgvIterator ai(argc, argv);
-    c1.runChain(ai);
-    cout<<"bo value: "<<c1.getValue("help")<<endl;
-    cout<<"bo2 value: "<<c1.getValue("node")<<endl;
+    if( c1.runChain(ai) )
+    {
+        cout<<"bo value: "<<c1.getValue("help")<<endl;
+        cout<<"bo2 value: "<<c1.getValue("node")<<endl;
+    }
     releaseAtoms();
     return 0;
 }
