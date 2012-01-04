@@ -1,3 +1,6 @@
+#ifndef JCLI_HPP
+#define JCLI_HPP
+
 interface ICLICommand : extends IInterface
 {
     virtual bool parseCommandLineOptions(ArgvIterator &iter)=0;
@@ -82,3 +85,4 @@ protected:
     bool optHelp;
 };
 
+#endif

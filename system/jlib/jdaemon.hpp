@@ -1,3 +1,6 @@
+#ifndef JDAEMON_HPP
+#define JDAEMON_HPP
+
 struct sighandler
 {
     void (*sigterm)(int);
@@ -19,3 +22,5 @@ interface iDaemon
     virtual bool isRunning() = 0;
 };
 
+
+#endif
