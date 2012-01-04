@@ -79,6 +79,7 @@ set (    SRCS
          jutil.cpp 
          jvmem.cpp 
          jdaemon.cpp
+         jcli.cpp
          sourcedoc.xml
     )
 
@@ -156,6 +157,7 @@ set (    INCLUDES
         jutil.hpp
         jvmem.hpp
         jdaemon.hpp
+        jcli.hpp
         )
 
 set_source_files_properties (jmalloc.cpp PROPERTIES COMPILE_FLAGS -fno-strict-aliasing)
