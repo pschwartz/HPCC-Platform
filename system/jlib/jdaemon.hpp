@@ -31,6 +31,20 @@ interface ICLICommand : extends IInterface
     virtual void usage()=0;
 };
 
+typedef ICLICommand *(*CLICommandFactory)(const char *cmdname);
+
+#define CLIOPT_ENV "--env"
+#define CLIOPT_ENV_DEFAULT "/etc/HPCCSystems/environment.xml"
+#define CLIOPT_NAME "--name"
+#define CLIOPT_VERSION "--version"
+#define CLIOPT_FOREGROUND "-f"
+
+
+bool extractCLICmdOption(StringBuffer & option, IProperties * globals, const char * envName, const char * propertyName, const char * defaultPrefix, const char * defaultSuffix);
+bool extractCLICmdOption(StringAttr & option, IProperties * globals, const char * envName, const char * propertyName, const char * defaultPrefix, const char * defaultSuffix);
+bool extractCLICmdOption(bool & option, IProperties * globals, const char * envName, const char * propertyName, bool defval);
+bool extractCLICmdOption(unsigned & option, IProperties * globals, const char * envName, const char * propertyName, unsigned defval);
+
 enum CLICmdOptionMatchIndicator
 {
     CLICmdOptionNoMatch=0,
@@ -58,4 +72,5 @@ public:
 public:
     StringAttr optEnv;
     StringAttr optName;
+    bool optForeground;
 };
