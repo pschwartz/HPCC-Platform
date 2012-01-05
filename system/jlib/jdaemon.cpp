@@ -1,3 +1,21 @@
+/*##############################################################################
+
+    Copyright (C) 2011 HPCC Systems.
+
+    All rights reserved. This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+############################################################################## */
+
 #include <cstdio>
 #include "build-config.h"
 #include "jstring.hpp"
@@ -5,9 +23,111 @@
 #include "jfile.hpp"
 #include "jargv.hpp"
 #include "jprop.hpp"
+#include "jargv.hpp"
 #include "jdaemon.hpp"
 
 
+/**
+ * CDaemonSupportFile impl
+ */
+/******************************************************************/
+void CDaemonSupportFile::create()
+{
+    if (supportFile && !supportFile->exists())
+    {
+        supportFileIO->write(0,0,"");
+    }
+}
+
+void CDaemonSupportFile::truncate()
+{
+    supportFileIO->setSize(0);
+}
+
+void CDaemonSupportFile::read(StringBuffer &data)
+{
+    data.loadFile(supportFile);
+}
+
+void CDaemonSupportFile::write(StringBuffer data)
+{
+    truncate();
+    supportFileIO->write(0, data.length(), data);
+}
+
+IFileIO *CDaemonSupportFile::getIFileIO()
+{
+    return supportFileIO;
+}
+
+/******************************************************************/
+
+
+/**
+ * CLockFile impl
+ */
+/******************************************************************/
+CLockFile::CLockFile(IFile *_lockFile)
+{
+    supportFile.setown(_lockFile);
+    supportFileIO.setown(supportFile->openShared(IFOreadwrite, IFSHnone));
+    dLock.setown(createDiscretionaryLock(supportFileIO));
+    create();
+}
+
+CLockFile::CLockFile(StringAttr lockFilename)
+{
+    supportFile.setown(createIFile(lockFilename));
+    supportFileIO.setown(supportFile->openShared(IFOreadwrite, IFSHnone));
+    dLock.setown(createDiscretionaryLock(supportFileIO));
+    create();
+}
+
+bool CLockFile::islocked()
+{
+    return dLock->isExclusiveLocked();
+}
+
+bool CLockFile::lock()
+{
+    dLock->lock(true, 500);
+    return islocked();
+}
+
+bool CLockFile::unlock()
+{
+    dLock->unlock();
+    return islocked();
+}
+
+/******************************************************************/
+
+/**
+ * CPidFile impl
+ */
+/******************************************************************/
+CPidFile::CPidFile(IFile *_pidFile)
+{
+    supportFile.setown(_pidFile);
+    supportFileIO.setown(supportFile->openShared(IFOcreaterw, IFSHnone));
+    if(!supportFile->exists())
+        supportFileIO->write(0,0, "");
+}
+
+CPidFile::CPidFile(StringAttr pidFilename)
+{
+    supportFile.setown(createIFile(pidFilename));
+    supportFileIO.setown(supportFile->openShared(IFOcreaterw, IFSHnone));
+    if(!supportFile->exists())
+        supportFileIO->write(0,0, "");
+}
+
+/******************************************************************/
+
+/**
+ * DaemonCMDShell impl
+ */
+/******************************************************************/
 int DaemonCMDShell::run()
 {
     try
@@ -33,8 +153,6 @@ int DaemonCMDShell::run()
 #endif
     return 0;
 }
-
-//=========================================================================================
 
 bool DaemonCMDShell::parseCommandLineOptions(ArgvIterator &iter)
 {
@@ -84,8 +202,6 @@ bool DaemonCMDShell::parseCommandLineOptions(ArgvIterator &iter)
     return true;
 }
 
-//=========================================================================================
-
 void DaemonCMDShell::usage()
 {
     fprintf(stdout,"\nUsage:\n"
@@ -100,3 +216,4 @@ void DaemonCMDShell::usage()
             "      --foreground, -f                 Run in foreground.\n\n", name.str(), DAEMONOPT_ENV_DEFAULT
     );
 }
+/******************************************************************/
