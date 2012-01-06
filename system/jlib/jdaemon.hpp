@@ -50,7 +50,7 @@ public:
     void create();
     void truncate();
     void read(StringBuffer &data);
-    void write(StringBuffer data);
+    void write(offset_t off, size32_t len, void *data);
     IFileIO *getIFileIO();
 
 protected:
@@ -67,6 +67,8 @@ public:
     bool islocked();
     bool lock();
     bool unlock();
+    void setHash(StringBuffer hash);
+    void clearHash();
 
 private:
     Owned<IDiscretionaryLock> dLock;
@@ -78,17 +80,15 @@ class CPidFile : public CDaemonSupportFile
 public:
     CPidFile(IFile *_pidFile);
     CPidFile(StringAttr pidFilename);
+    void setPid(int pid);
+    void clearPid();
 
-private:
-    StringBuffer pid;
 };
 
 interface iEnvHash : extends IInterface
 {
     virtual void hashEnv(StringAttr env) = 0;
     virtual bool compareHash(StringBuffer hash) = 0;
-    virtual void clearHash() = 0;
-    virtual void writeHash(IFileIO *fileio) = 0;
 };
 
 interface iDaemon : extends IInterface

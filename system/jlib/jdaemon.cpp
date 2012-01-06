@@ -17,6 +17,7 @@
 ############################################################################## */
 
 #include <cstdio>
+#include <cstdlib>
 #include "build-config.h"
 #include "jstring.hpp"
 #include "jlog.hpp"
@@ -49,10 +50,10 @@ void CDaemonSupportFile::read(StringBuffer &data)
     data.loadFile(supportFile);
 }
 
-void CDaemonSupportFile::write(StringBuffer data)
+void CDaemonSupportFile::write(offset_t off, size32_t len, void *data)
 {
     truncate();
-    supportFileIO->write(0, data.length(), data);
+    supportFileIO->write(off, len, data);
 }
 
 IFileIO *CDaemonSupportFile::getIFileIO()
@@ -100,6 +101,16 @@ bool CLockFile::unlock()
     return islocked();
 }
 
+void CLockFile::setHash(StringBuffer hash)
+{
+	write(0, hash.length(), (char*) hash.str());
+}
+
+void CLockFile::clearHash()
+{
+	truncate();
+}
+
 /******************************************************************/
 
 /**
@@ -120,6 +131,17 @@ CPidFile::CPidFile(StringAttr pidFilename)
     supportFileIO.setown(supportFile->openShared(IFOcreaterw, IFSHnone));
     if(!supportFile->exists())
         supportFileIO->write(0,0, "");
+}
+
+void CPidFile::setPid(int pid)
+{
+	StringBuffer sPid(pid);
+	write(0, sPid.length(), (char*) sPid.str());
+}
+
+void CPidFile::clearPid()
+{
+	truncate();
 }
 
 /******************************************************************/
