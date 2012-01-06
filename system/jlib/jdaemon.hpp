@@ -34,64 +34,26 @@ struct sighandler
     void (*sighup)(int);
 };
 
-interface iDaemonSupportFile : extends IInterface
+interface IDaemonFile : extends IInterface
 {
     virtual void create() = 0;
+    virtual void remove() = 0;
     virtual void truncate() = 0;
-    virtual void read(StringBuffer &data) = 0;
-    virtual void write(StringBuffer data) = 0;
+    virtual void read(offset_t off, size32_t len, void *data) = 0;
+    virtual void write(offset_t off, size32_t len, void *data) = 0;
     virtual IFileIO *getIFileIO() = 0;
 };
 
-class CDaemonSupportFile : public CInterface, implements iDaemonSupportFile
+interface IEnvHash : extends IInterface
 {
-public:
-    IMPLEMENT_IINTERFACE;
-    void create();
-    void truncate();
-    void read(StringBuffer &data);
-    void write(offset_t off, size32_t len, void *data);
-    IFileIO *getIFileIO();
-
-protected:
-    Owned<IFile> supportFile;
-    Owned<IFileIO> supportFileIO;
+    virtual void hashEnv(const char* env=NULL) = 0;
+    virtual void setHash(StringBuffer &_hash) = 0;
+    virtual void getHash(StringBuffer &_hash) = 0;
+    virtual bool compareHash(StringBuffer _hash) = 0;
+    virtual bool compareHash(IEnvHash *_hash) = 0;
 };
 
-
-class CLockFile : public CDaemonSupportFile
-{
-public:
-    CLockFile(IFile *_lockFile);
-    CLockFile(StringAttr lockFilename);
-    bool islocked();
-    bool lock();
-    bool unlock();
-    void setHash(StringBuffer hash);
-    void clearHash();
-
-private:
-    Owned<IDiscretionaryLock> dLock;
-
-};
-
-class CPidFile : public CDaemonSupportFile
-{
-public:
-    CPidFile(IFile *_pidFile);
-    CPidFile(StringAttr pidFilename);
-    void setPid(int pid);
-    void clearPid();
-
-};
-
-interface iEnvHash : extends IInterface
-{
-    virtual void hashEnv(StringAttr env) = 0;
-    virtual bool compareHash(StringBuffer hash) = 0;
-};
-
-interface iDaemon : extends IInterface
+interface IDaemon : extends IInterface
 {
     virtual bool daemonize() = 0; // Spawn Daemon
     virtual bool isRunning() = 0;
@@ -104,7 +66,63 @@ interface iDaemon : extends IInterface
 
 };
 
-class CDaemon : public CInterface, implements iDaemon
+class CDaemonFile : public CInterface, implements IDaemonFile
+{
+public:
+    IMPLEMENT_IINTERFACE;
+    void create();
+    void remove();
+    void truncate();
+    void read(offset_t off, size32_t len, void *data);
+    void write(offset_t off, size32_t len, void *data);
+    IFileIO *getIFileIO();
+
+protected:
+    Owned<IFile> supportFile;
+    Owned<IFileIO> supportFileIO;
+};
+
+class CLockFile : public CDaemonFile
+{
+public:
+    CLockFile(IFile *_lockFile);
+    CLockFile(StringAttr lockFilename);
+    bool islocked();
+    bool lock();
+    bool unlock();
+    IEnvHash *getHash();
+    void setHash(IEnvHash *hash);
+    void clearHash();
+
+private:
+    Owned<IDiscretionaryLock> dLock;
+    Owned<IEnvHash> ihash;
+};
+
+class CPidFile : public CDaemonFile
+{
+public:
+    CPidFile(IFile *_pidFile);
+    CPidFile(StringAttr pidFilename);
+    void setPid(unsigned pid);
+    void clearPid();
+};
+
+class CEnvHash : public CInterface, implements IEnvHash
+{
+public:
+    IMPLEMENT_IINTERFACE;
+    void hashEnv(const char* env=NULL);
+    void setHash(StringBuffer &_hash);
+    void getHash(StringBuffer &_hash);
+    bool compareHash(StringBuffer _hash);
+    bool compareHash(IEnvHash *_hash);
+
+private:
+    StringBuffer hash;
+};
+
+class CDaemon : public CInterface, implements IDaemon
 {
 public:
     IMPLEMENT_IINTERFACE;
@@ -136,5 +154,13 @@ protected:
     StringAttr optName;
     bool optForeground;
 };
+
+
+extern IEnvHash * createIEnvHash();
+extern CLockFile * createLockFile(IFile *_lockFile);
+extern CLockFile * createLockFile(StringAttr lockFilename);
+extern CPidFile * createPidFile(IFile *_pidFile);
+extern CPidFile * createPidFile(StringAttr pidFilename);
+
 
 #endif

@@ -25,14 +25,15 @@
 #include "jargv.hpp"
 #include "jprop.hpp"
 #include "jargv.hpp"
+#include "jmd5.hpp"
 #include "jdaemon.hpp"
 
 
 /**
- * CDaemonSupportFile impl
+ * CDaemonFile impl
  */
 /******************************************************************/
-void CDaemonSupportFile::create()
+void CDaemonFile::create()
 {
     if (supportFile && !supportFile->exists())
     {
@@ -40,23 +41,28 @@ void CDaemonSupportFile::create()
     }
 }
 
-void CDaemonSupportFile::truncate()
+void CDaemonFile::remove()
+{
+    supportFile->remove();
+}
+
+void CDaemonFile::truncate()
 {
     supportFileIO->setSize(0);
 }
 
-void CDaemonSupportFile::read(StringBuffer &data)
+void CDaemonFile::read(offset_t off, size32_t len, void *data)
 {
-    data.loadFile(supportFile);
+    supportFileIO->read(off, len, data);
 }
 
-void CDaemonSupportFile::write(offset_t off, size32_t len, void *data)
+void CDaemonFile::write(offset_t off, size32_t len, void *data)
 {
     truncate();
     supportFileIO->write(off, len, data);
 }
 
-IFileIO *CDaemonSupportFile::getIFileIO()
+IFileIO *CDaemonFile::getIFileIO()
 {
     return supportFileIO;
 }
@@ -101,9 +107,20 @@ bool CLockFile::unlock()
     return islocked();
 }
 
-void CLockFile::setHash(StringBuffer hash)
+IEnvHash *CLockFile::getHash()
 {
-	write(0, hash.length(), (char*) hash.str());
+    StringBuffer hash;
+    read(0,32,hash.reserve(32));
+    ihash.setown(createIEnvHash());
+    ihash->setHash(hash);
+    return ihash;
+ }
+
+void CLockFile::setHash(IEnvHash *hash)
+{
+    StringBuffer hashStr;
+    hash->getHash(hashStr);
+	write(0, hashStr.length(), (char*) hashStr.str());
 }
 
 void CLockFile::clearHash()
@@ -133,15 +150,59 @@ CPidFile::CPidFile(StringAttr pidFilename)
         supportFileIO->write(0,0, "");
 }
 
-void CPidFile::setPid(int pid)
+void CPidFile::setPid(unsigned pid)
 {
-	StringBuffer sPid(pid);
-	write(0, sPid.length(), (char*) sPid.str());
+    StringBuffer pidStr;
+    pidStr.append(pid);
+    write(0,pidStr.length(), pidStr.detach());
 }
 
 void CPidFile::clearPid()
 {
 	truncate();
+}
+
+/******************************************************************/
+
+/**
+ * CEnvHash impl
+ */
+/******************************************************************/
+
+void CEnvHash::hashEnv(const char* env)
+{
+    if(env)
+    {
+        md5_filesum(env, hash);
+    }
+    else
+    {
+        StringBuffer env;
+        env.append(CONFIG_DIR).append(PATHSEPCHAR).append(ENV_XML_FILE);
+        md5_filesum(env.str(), hash);
+    }
+}
+
+void CEnvHash::setHash(StringBuffer &_hash)
+{
+    hash = _hash;
+}
+
+void CEnvHash::getHash(StringBuffer &_hash)
+{
+    _hash = hash;
+}
+
+bool CEnvHash::compareHash(StringBuffer _hash)
+{
+    return streq(hash,_hash);
+}
+
+bool CEnvHash::compareHash(IEnvHash *_hash)
+{
+    StringBuffer _hashData;
+    _hash->getHash(_hashData);
+    return compareHash(_hashData);
 }
 
 /******************************************************************/
@@ -239,3 +300,28 @@ void DaemonCMDShell::usage()
     );
 }
 /******************************************************************/
+
+extern IEnvHash * createIEnvHash()
+{
+    return new CEnvHash();
+}
+
+extern CLockFile * createLockFile(IFile *_lockFile)
+{
+    return new CLockFile(_lockFile);
+}
+
+extern CLockFile * createLockFile(StringAttr lockFilename)
+{
+    return new CLockFile(lockFilename);
+}
+
+extern CPidFile * createPidFile(IFile *_pidFile)
+{
+    return new CPidFile(_pidFile);
+}
+
+extern CPidFile * createPidFile(StringAttr pidFilename)
+{
+    return new CPidFile(pidFilename);
+}
