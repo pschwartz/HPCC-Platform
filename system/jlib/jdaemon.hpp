@@ -39,6 +39,7 @@ interface IDaemonFile : extends IInterface
     virtual void create() = 0;
     virtual void remove() = 0;
     virtual void truncate() = 0;
+    virtual size32_t size() = 0;
     virtual void read(offset_t off, size32_t len, void *data) = 0;
     virtual void write(offset_t off, size32_t len, void *data) = 0;
     virtual IFileIO *getIFileIO() = 0;
@@ -73,6 +74,7 @@ public:
     void create();
     void remove();
     void truncate();
+    size32_t size();
     void read(offset_t off, size32_t len, void *data);
     void write(offset_t off, size32_t len, void *data);
     IFileIO *getIFileIO();
@@ -105,6 +107,7 @@ public:
     CPidFile(IFile *_pidFile);
     CPidFile(StringAttr pidFilename);
     void setPid(unsigned pid);
+    unsigned getPid();
     void clearPid();
 };
 

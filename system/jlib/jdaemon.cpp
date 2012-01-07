@@ -51,6 +51,11 @@ void CDaemonFile::truncate()
     supportFileIO->setSize(0);
 }
 
+size32_t CDaemonFile::size()
+{
+	return supportFile->size();
+}
+
 void CDaemonFile::read(offset_t off, size32_t len, void *data)
 {
     supportFileIO->read(off, len, data);
@@ -155,6 +160,13 @@ void CPidFile::setPid(unsigned pid)
     StringBuffer pidStr;
     pidStr.append(pid);
     write(0,pidStr.length(), pidStr.detach());
+}
+
+unsigned CPidFile::getPid()
+{
+	StringBuffer pidStr;
+	read(0, size(), pidStr.reserve(size());
+	return std::atoi(pidStr.detach());
 }
 
 void CPidFile::clearPid()
