@@ -31,7 +31,7 @@ struct sighandler
 {
     void (*sigterm)(int);
     void (*sigint)(int);
-    void (*sighup)(int);
+    void (*sighup)(int); //TODO: implement usage of sighup, placeholder at this time.
 };
 
 interface IDaemonFile : extends IInterface
@@ -59,11 +59,11 @@ interface IDaemon : extends IInterface
     virtual bool daemonize() = 0; // Spawn Daemon
     virtual bool isRunning() = 0;
 
-    virtual void setName(StringAttr name) = 0;
-    virtual void setLockFile(StringAttr name) = 0;
-    virtual void setPidFile(StringAttr name) = 0;
-    virtual void setEnvHash(StringAttr EnvFile) = 0;
-    virtual bool checkEnvHash() = 0;
+    virtual void setName(StringAttr name) = 0;  // Set component name passed from CLI.
+    virtual void setLockFile(StringAttr name) = 0; // Set component LockFile name.
+    virtual void setPidFile(StringAttr name) = 0; // Set component PidFile name.
+    virtual void setEnvHash(StringAttr EnvFile) = 0; // Set component env file passed from CLI.
+    virtual bool checkEnvHash() = 0; // Check if running daemon's env passes current env.
 
 };
 
@@ -129,6 +129,13 @@ class CDaemon : public CInterface, implements IDaemon
 {
 public:
     IMPLEMENT_IINTERFACE;
+    bool daemonize(); // Spawn Daemon
+    bool isRunning();
+    void setName(StringAttr name);
+    void setLockFile(StringAttr name);
+    void setPidFile(StringAttr name);
+    void setEnvHash(StringAttr EnvFile);
+    bool checkEnvHash();
 };
 
 

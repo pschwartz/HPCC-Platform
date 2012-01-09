@@ -115,7 +115,7 @@ bool CLockFile::unlock()
 IEnvHash *CLockFile::getHash()
 {
     StringBuffer hash;
-    read(0,32,hash.reserve(32));
+    read(0,size(),hash.reserve(size()));
     ihash.setown(createIEnvHash());
     ihash->setHash(hash);
     return ihash;
@@ -165,7 +165,7 @@ void CPidFile::setPid(unsigned pid)
 unsigned CPidFile::getPid()
 {
 	StringBuffer pidStr;
-	read(0, size(), pidStr.reserve(size());
+	read(0, size(), pidStr.reserve(size()));
 	return std::atoi(pidStr.detach());
 }
 
