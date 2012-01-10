@@ -1074,6 +1074,7 @@ public:
                 throw MakeOsException(::GetLastError(), "CDiscretionaryFileLock::unlockhandle");
 #else
             setShareLock(handle,IFSHfull);
+            locked = false;
 #endif
         }
     }

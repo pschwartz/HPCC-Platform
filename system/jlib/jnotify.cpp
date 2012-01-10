@@ -24,10 +24,10 @@
 #include <sys/inotify.h>
 
 #include "jhash.hpp"
+#include "jsuperhash.hpp"
 #include "jlog.hpp"
 #include "jfile.hpp"
 #include "jnotify.hpp"
-
 
 /**
  * CNotify impl
@@ -45,110 +45,100 @@ CNotify::CNotify()
 
 CNotify::~CNotify()
 {
+    if( watchMap.count() != 0 )
+    {
+        HashIterator iter(watchMap);
+        ForEach(iter)
+        {
+            WARNLOG("Closing inotify descriptor for %s", (const char*)iter.query().getKey());
+            closefdWatch(iter.query().getHash());
+        }
+    }
     close(inWatch);
 }
 
-bool CNotify::add(const char* path, int wfd)
+bool CNotify::add(const char* file)
 {
-    int *hfd = watchMap.getValue(path);
-    if ( !hfd )
+    int *hChk = get(file);
+    if ( hChk )
     {
-        return watchMap.setValue(path, wfd);
+        ERRLOG("Attempted to add file already in watch list.");
+        return false;
     }
-    return false;
+    WARNLOG("Added path: %s", file);
+    int wid = inotify_add_watch(inWatch, file, IN_MODIFY | IN_CREATE | IN_DELETE );
+    return watchMap.setValue(file,wid);
 }
 
-bool CNotify::remove(const char* path)
+void CNotify::closefdWatch(int wid){
+    inotify_rm_watch(inWatch, wid);
+}
+
+bool CNotify::remove(const char* file)
 {
-    int *hfd = watchMap.getValue(path);
-    if ( hfd )
+    int *hChk = get(file);
+    if ( !hChk )
     {
-        return watchMap.remove(path);
+        ERRLOG("Attempted to remove file not in watch list.");
+        return false;
     }
-    return false;
+    closefdWatch(*hChk);
+    WARNLOG("Removed path: %s", file);
+    return watchMap.remove(file);
 }
 
-int *CNotify::get(const char* path)
+
+int* CNotify::get(const char* file)
 {
-    int *hfd = watchMap.getValue(path);
-    if ( hfd )
+    int *hChk = watchMap.getValue(file);
+    if ( !hChk )
     {
-        return hfd;
+        ERRLOG("Attempted to get file not in watch list.");
+        return NULL;
     }
-    return NULL;
+   return hChk;
 }
 
-bool CNotify::addWatch(const char* path)
+
+bool CNotify::addPath(const char* file)
 {
-    WARNLOG("Adding Path: %s", path);
-    int wd = inotify_add_watch(inWatch, path, IN_MODIFY|IN_CREATE|IN_DELETE);
-    return add(path, wd);
+    Owned<IFile> _file = createIFile(file);
+    if ( _file->isFile() == notFound && _file->isDirectory() == notFound)
+    {
+        WARNLOG("Attempted to add file or directory that does not exist.");
+        //TODO: impl action if file or dir does not exist.
+        return false;
+    }
+    else if ( _file->isFile() )
+    {
+        StringBuffer dir;
+        splitFilename(_file->queryFilename(), &dir, &dir, NULL, NULL);
+        Owned<IFile> dP = createIFile(dir);
+        bool addedDir = addPath(dP->queryFilename());
+        bool addedFile = add(_file->queryFilename());
+        if( addedDir && addedFile )
+        {
+            return true;
+        }
+        else
+        {
+            ERRLOG("Could not add file and directory.");
+            remove(dP->queryFilename());
+            remove(_file->queryFilename());
+            return false;
+        }
+    }
+    else if ( _file->isDirectory() )
+    {
+        return add(_file->queryFilename());
+    }
 }
 
-bool CNotify::addWatch(StringBuffer* path)
+bool CNotify::removePath(const char* file)
 {
-    return addWatch(path->str());
+    return remove(file);
 }
 
-bool CNotify::addWatch(IFile* file)
-{
-    return addWatch(file->queryFilename());
-}
-
-bool CNotify::removeWatch(const char* path)
-{
-    return remove(path);
-}
-
-bool CNotify::removeWatch(StringBuffer* path)
-{
-    return removeWatch(path->str());
-}
-
-bool CNotify::removeWatch(IFile* file)
-{
-    return removeWatch(file->queryFilename());
-}
-
-bool CNotify::isWatched(const char* path)
-{
-    int *val = get(path);
-    if( val )
-        return true;
-    return false;
-}
-
-bool CNotify::isWatched(StringBuffer* path)
-{
-    return isWatched(path->str());
-}
-
-bool CNotify::isWatched(IFile* file)
-{
-    return isWatched(file->queryFilename());
-}
-
-int *CNotify::getWatched(const char* path)
-{
-    if(isWatched(path))
-        return get(path);
-    return NULL;
-}
-
-int *CNotify::getWatched(StringBuffer* path)
-{
-    return getWatched(path->str());
-}
-
-int *CNotify::getWatched(IFile* file)
-{
-    return getWatched(file->queryFilename());
-}
-
-int CNotify::getWatcher()
-{
-    return inWatch;
-}
 
 /******************************************************************/
 
@@ -159,7 +149,7 @@ int CNotify::getWatcher()
 CNotifyThread::CNotifyThread(INotify *watcher) : Thread("inotify Watchdog Thread")
 {
     started = false;
-    inWatch = watcher->getWatcher();
+    //inWatch = watcher->getWatcher();
 }
 
 CNotifyThread::~CNotifyThread()
@@ -200,29 +190,8 @@ int CNotifyThread::run()
         while ( i < length) {
             struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
             if ( event->len ) {
-                if ( event->mask && IN_CREATE ) {
-                    if ( event->mask && IN_ISDIR ) {
-                        WARNLOG( "The directory %s was created.\n", event->name );
-                    }
-                    else {
-                        WARNLOG( "The file %s was created.\n", event->name );
-                    }
-                }
-                else if ( event->mask && IN_DELETE ) {
-                    if ( event->mask && IN_ISDIR ) {
-                        WARNLOG( "The directory %s was deleted.\n", event->name );
-                    }
-                    else {
-                        WARNLOG( "The file %s was deleted.\n", event->name );
-                    }
-                }
-                else if ( event->mask && IN_MODIFY ) {
-                    if ( event->mask && IN_ISDIR ) {
-                        WARNLOG( "The directory %s was modified.\n", event->name );
-                    }
-                    else {
-                        WARNLOG( "The file %s was modified.\n", event->name );
-                    }
+                if ( event->mask && IN_ALL_EVENTS ) {
+                    WARNLOG( "%s was %d.", event->name, event->mask );
                 }
             }
             i += EVENT_SIZE + event->len;

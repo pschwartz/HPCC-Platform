@@ -26,23 +26,10 @@ enum INOmode { INOmodify, INOcreate, INOdelete, INOmodcre, INOmoddel, INOcredel,
 
 interface INotify : extends IInterface
 {
-    virtual bool addWatch(const char* path) = 0;
-    virtual bool removeWatch(const char* path) = 0;
-    virtual bool isWatched(const char* path) = 0;
-    virtual int *getWatched(const char* path) = 0;
-
-    virtual bool addWatch(StringBuffer* path) = 0;
-    virtual bool removeWatch(StringBuffer* path) = 0;
-    virtual bool isWatched(StringBuffer* path) = 0;
-    virtual int *getWatched(StringBuffer* path) = 0;
-
-    virtual bool addWatch(IFile* file) = 0;
-    virtual bool removeWatch(IFile* file) = 0;
-    virtual bool isWatched(IFile* file) = 0;
-    virtual int *getWatched(IFile* file) = 0;
-
-    virtual int getWatcher() = 0;
+    virtual bool addPath(const char* file) = 0;
+    virtual bool removePath(const char* file) = 0;
 };
+
 
 class CNotify : public CInterface, implements INotify
 {
@@ -50,27 +37,14 @@ public:
     IMPLEMENT_IINTERFACE;
     CNotify();
     ~CNotify();
-    bool addWatch(const char* path);
-    bool removeWatch(const char* path);
-    bool isWatched(const char* path);
-    int *getWatched(const char* path);
-
-    bool addWatch(StringBuffer* path);
-    bool removeWatch(StringBuffer* path);
-    bool isWatched(StringBuffer* path);
-    int *getWatched(StringBuffer* path);
-
-    bool addWatch(IFile* file);
-    bool removeWatch(IFile* file);
-    bool isWatched(IFile* file);
-    int *getWatched(IFile* file);
-
-    int getWatcher();
-
+    bool addPath(const char* file);
+    bool removePath(const char* file);
 private:
-    bool add(const char* path, int wfd);
-    bool remove(const char* path);
-    int *get(const char* path);
+    bool add(const char* file);
+    void closefdWatch(int wid);
+    bool remove(const char* file);
+    bool find(const char* file);
+    int* get(const char* file);
 
 private:
     int inWatch;
