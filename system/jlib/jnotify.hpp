@@ -24,32 +24,7 @@
 
 enum INOmode { INOmodify, INOcreate, INOdelete, INOmodcre, INOmoddel, INOcredel, INOall };
 
-interface INotify : extends IInterface
-{
-    virtual bool addPath(const char* file) = 0;
-    virtual bool removePath(const char* file) = 0;
-};
-
-
-class CNotify : public CInterface, implements INotify
-{
-public:
-    IMPLEMENT_IINTERFACE;
-    CNotify();
-    ~CNotify();
-    bool addPath(const char* file);
-    bool removePath(const char* file);
-private:
-    bool add(const char* file);
-    void closefdWatch(int wid);
-    bool remove(const char* file);
-    bool find(const char* file);
-    int* get(const char* file);
-
-private:
-    int inWatch;
-    MapStringTo<int> watchMap;
-};
+interface INotify;
 
 class CNotifyThread : public Thread
 {
@@ -64,6 +39,41 @@ private:
     int run();
     bool started;
     int inWatch;
+};
+
+interface INotify : extends IInterface
+{
+    virtual bool addPath(const char* file) = 0;
+    virtual bool removePath(const char* file) = 0;
+    virtual bool startWatch() = 0;
+    virtual bool endWatch() = 0;
+};
+
+class CNotify : public CInterface, implements INotify
+{
+public:
+    IMPLEMENT_IINTERFACE;
+    CNotify();
+    ~CNotify();
+    bool addPath(const char* file);
+    bool removePath(const char* file);
+
+private:
+    bool add(const char* file);
+    void closefdWatch(int wid);
+    bool remove(const char* file);
+    IMapping* find(const char* file);
+
+    int inWatch;
+    MapStringTo<int> watchMap;
+
+//Watcher thread
+public:
+    bool startWatch();
+    bool endWatch();
+
+private:
+    Owned<CNotifyThread> watcher;
 };
 
 

@@ -59,7 +59,7 @@ CNotify::~CNotify()
 
 bool CNotify::add(const char* file)
 {
-    int *hChk = get(file);
+    IMapping *hChk = find(file);
     if ( hChk )
     {
         ERRLOG("Attempted to add file already in watch list.");
@@ -70,33 +70,27 @@ bool CNotify::add(const char* file)
     return watchMap.setValue(file,wid);
 }
 
-void CNotify::closefdWatch(int wid){
+void CNotify::closefdWatch(int wid)
+{
     inotify_rm_watch(inWatch, wid);
 }
 
 bool CNotify::remove(const char* file)
 {
-    int *hChk = get(file);
+    IMapping *hChk = find(file);
     if ( !hChk )
     {
         ERRLOG("Attempted to remove file not in watch list.");
         return false;
     }
-    closefdWatch(*hChk);
-    WARNLOG("Removed path: %s", file);
-    return watchMap.remove(file);
+    closefdWatch(hChk->getHash());
+    WARNLOG("Removed path: %s", (char*)hChk->getKey());
+    return watchMap.remove((const char*)hChk->getKey());
 }
 
-
-int* CNotify::get(const char* file)
+IMapping *CNotify::find(const char* file)
 {
-    int *hChk = watchMap.getValue(file);
-    if ( !hChk )
-    {
-        ERRLOG("Attempted to get file not in watch list.");
-        return NULL;
-    }
-   return hChk;
+    return watchMap.find(file);
 }
 
 
@@ -139,6 +133,15 @@ bool CNotify::removePath(const char* file)
     return remove(file);
 }
 
+bool CNotify::startWatch()
+{
+    //TODO: impl watcher code that spawns a thread.
+}
+
+bool CNotify::endWatch()
+{
+    //TODO: impl watcher cleanup on event found.
+}
 
 /******************************************************************/
 
