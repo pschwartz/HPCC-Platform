@@ -172,5 +172,76 @@ extern CLockFile * createLockFile(StringAttr lockFilename);
 extern CPidFile * createPidFile(IFile *_pidFile);
 extern CPidFile * createPidFile(StringAttr pidFilename);
 
+#ifdef _USE_CPPUNIT
+#include <cppunit/extensions/HelperMacros.h>
+#define ASSERT(a) { if (!(a)) CPPUNIT_ASSERT(a); }
+
+class CEnvHashTest : public CppUnit::TestFixture
+{
+    CPPUNIT_TEST_SUITE( CEnvHashTest  );
+        CPPUNIT_TEST(test_hashEnv);
+        CPPUNIT_TEST(test_setHash);
+        CPPUNIT_TEST(test_getHash);
+        CPPUNIT_TEST(test_compareHash);
+    CPPUNIT_TEST_SUITE_END();
+private:
+    Owned<IEnvHash> h_1, h_2;
+    Owned<IFile> file;
+    Owned<IFileIO> fileio;
+public:
+    void setUp();
+    void tearDown();
+    void test_hashEnv();
+    void test_setHash();
+    void test_getHash();
+    void test_compareHash();
+};
+
+void CEnvHashTest::setUp()
+{
+    file.setown(createIFile("test"));
+    fileio.setown(file->open(IFOreadwrite));
+    fileio->write(0, 4, "test");
+    h_1.setown(createIEnvHash());
+    h_2.setown(createIEnvHash());
+    h_1->hashEnv("test");
+    h_2->hashEnv("test");
+}
+
+void  CEnvHashTest::tearDown()
+{
+
+}
+
+void CEnvHashTest::test_hashEnv()
+{
+    ASSERT(h_1->compareHash(h_2));
+}
+
+void CEnvHashTest::test_setHash()
+{
+    StringBuffer hash;
+    h_1->getHash(hash);
+    h_2->setHash(hash);
+    ASSERT(h_2->compareHash(hash));
+}
+
+void CEnvHashTest::test_getHash()
+{
+    StringBuffer hash, hashB;
+    h_1->getHash(hash);
+    h_1->getHash(hashB);
+    ASSERT(hash == hashB);
+}
+
+void CEnvHashTest::test_compareHash()
+{
+    ASSERT(h_1->compareHash(h_2));
+}
+
+CPPUNIT_TEST_SUITE_REGISTRATION( CEnvHashTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( CEnvHashTest, "CEnvHashTest" );
+
+#endif
 
 #endif
