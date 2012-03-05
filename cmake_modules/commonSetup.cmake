@@ -53,6 +53,10 @@ IF ("${COMMONSETUP_DONE}" STREQUAL "")
   option(CHECK_GIT_TAG "Require git tag to match the generated build tag" OFF)
   option(USE_XALAN "Configure use of xalan" ON)
   option(USE_LIBXSLT "Configure use of libxslt" OFF)
+  option(MAKE_DOCS "Create documentation at build time." OFF)
+  option(DOCS_DRUPAL "Create Drupal HTML Docs" OFF)
+  option(DOCS_EPUB "Create EPUB Docs" OFF)
+  option(DOCS_MOBI "Create Mobi Docs" OFF)
   
   if ( USE_XALAN AND USE_LIBXSLT )
       set(USE_XALAN OFF)
@@ -71,6 +75,23 @@ IF ("${COMMONSETUP_DONE}" STREQUAL "")
   endif()
 
   set(CMAKE_MODULE_PATH "${HPCC_SOURCE_DIR}/cmake_modules")
+
+  IF (MAKE_DOCS)
+    find_package(XSLTPROC)
+    IF (XSLTPROC_FOUND)
+      add_definitions (-D_USE_XSLTPROC)
+    ELSE()
+      message(FATAL_ERROR "XSLTPROC requested but package not found")
+    ENDIF()
+    find_package(FOP)
+    IF (FOP_FOUND)
+      add_definitions (-D_USE_FOP)
+    ELSE()
+      message(FATAL_ERROR "FOP requested but package not found")
+    ENDIF()
+  ENDIF(MAKE_DOCS)
+
+
 
   ##########################################################
 

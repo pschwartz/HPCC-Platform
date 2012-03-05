@@ -127,6 +127,7 @@ add_subdirectory (rtl)
 add_subdirectory (services)
 add_subdirectory (system)
 add_subdirectory (thorlcr)
+add_subdirectory (docs)
 
 ###
 ## CPack install and packaging setup.
