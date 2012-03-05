@@ -19,6 +19,4 @@ cmake_minimum_required(VERSION 2.8)
 PROJECT(SLR)
 
 set (DOC_IMAGES ${CMAKE_CURRENT_SOURCE_DIR}/)
-DOCBOOK_TO_PDF( ${FO_XSL} SLR-includer.xml "Standard Library Reference" _slr_targets )
-
-add_custom_target(slr ALL DEPENDS ${_slr_targets})
+DOCBOOK_TO_PDF( ${FO_XSL} SLR-includer.xml "Standard Library Reference")

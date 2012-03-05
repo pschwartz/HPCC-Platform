@@ -18,6 +18,9 @@
 cmake_minimum_required(VERSION 2.8)
 PROJECT(docs)
 
+define_property(GLOBAL PROPERTY DOC_TARGETS BRIEF_DOCS "docs" FULL_DOCS "docs")
+mark_as_advanced(DOC_TARGETS)
+
 include(${CMAKE_SOURCE_DIR}/docMacros.cmake)
 
 set (DOCBOOK_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/resources)
@@ -37,10 +40,12 @@ configure_file(Version.xml.in ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
 
 set (FO_XSL ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/fo.xsl)
 
-DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB" _targets )
-DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "DataHandling" _targets )
+
+DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB")
+DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "DataHandling")
 
 add_subdirectory(ECLR_mods)
 add_subdirectory(SLR-Mods)
 
+GET_PROPERTY(_targets GLOBAL PROPERTY DOC_TARGETS)
 add_custom_target(docs ALL DEPENDS ${_targets})
