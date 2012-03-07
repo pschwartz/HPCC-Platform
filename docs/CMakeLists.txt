@@ -36,22 +36,20 @@ endif()
 
 
 add_subdirectory(resources)
+add_subdirectory(common)
 add_subdirectory(BuildTools)
 
-set (VERSION_FILE ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
-set (VERSION_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-configure_file(Version.xml.in ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
 
 set (FO_XSL ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/fo.xsl)
 
 
 #DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB")
-DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "DataHandling")
+#DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "DataHandling")
 
-add_subdirectory(IMDB)
+#add_subdirectory(IMDB)
 add_subdirectory(ECLR_mods)
-add_subdirectory(SLR-Mods)
+#add_subdirectory(SLR-Mods)
 
 GET_PROPERTY(_targets GLOBAL PROPERTY DOC_TARGETS)
 add_custom_target(docs ALL DEPENDS ${_targets})

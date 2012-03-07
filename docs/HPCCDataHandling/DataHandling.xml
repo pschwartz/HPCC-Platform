@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-<book lang="en_US">
+<book lang="en_US" xml:base="../">
   <bookinfo>
     <title>HPCC Data Handling</title>
 
@@ -32,15 +32,15 @@
       <para></para>
     </legalnotice>
 
-        <xi:include href="Version.xml" xpointer="FooterInfo"
+        <xi:include href="common/Version.xml" xpointer="FooterInfo"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="Version.xml" xpointer="DateVer"
+    <xi:include href="common/Version.xml" xpointer="DateVer"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
     <corpname>HPCC Systems</corpname>
 
-    <xi:include href="Version.xml" xpointer="Copyright"
+    <xi:include href="common/Version.xml" xpointer="Copyright"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
     <mediaobject role="logo">

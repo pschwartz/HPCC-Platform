@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-<book>
+<book xml:base="../">
   <bookinfo>
     <title>ECL Programmers Guide</title>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="../images/redswooshWithLogo3.jpg" />
+        <imagedata fileref="images/redswooshWithLogo3.jpg" />
       </imageobject>
     </mediaobject>
 
@@ -32,22 +32,22 @@
       <para></para>
     </legalnotice> 
 
-   <xi:include href="../Version.xml" xpointer="FooterInfo"
+   <xi:include href="common/Version.xml" xpointer="FooterInfo"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 
-    <xi:include href="../Version.xml" xpointer="DateVer"
+    <xi:include href="common/Version.xml" xpointer="DateVer"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
     <corpname>HPCC Systems</corpname>
 
-    <xi:include href="../Version.xml" xpointer="Copyright"
+    <xi:include href="common/Version.xml" xpointer="Copyright"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 
     <mediaobject role="logo">
       <imageobject>
-        <imagedata fileref="../images/LN_Rightjustified.jpg" />
+        <imagedata fileref="images/LN_Rightjustified.jpg" />
       </imageobject>
     </mediaobject>
   </bookinfo>
@@ -55,99 +55,99 @@
   <chapter>
     <title>ECL Programming Concepts</title>
 
-    <xi:include href="PrG_Attribute_Creation.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Attribute_Creation.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Creating_example_data.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Creating_example_data.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Crosstab_reports.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Crosstab_reports.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Efficient_Value_TypeUsage.xml"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Efficient_Value_TypeUsage.xml"
                 xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Using_Group_Function.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Using_Group_Function.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Automated_ECL.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Automated_ECL.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Job_Failure.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Job_Failure.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_NonRandom_Random.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_NonRandom_Random.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Workwith_XML_Data.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Workwith_XML_Data.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Workwith_Blobs.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Workwith_Blobs.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Using_ECL_Keys.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Using_ECL_Keys.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
   </chapter>
 
   <chapter>
     <title>Working With SuperFiles</title>
 
-    <xi:include href="PrG_Superfile_Overview.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Superfile_Overview.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_CreateMaintain_Superfiles.xml"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_CreateMaintain_Superfiles.xml"
                 xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Indexing_Superfiles.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Indexing_Superfiles.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Using_SuperKeys.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Using_SuperKeys.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
   </chapter>
 
   <chapter>
     <title>Working With Roxie</title>
 
-    <xi:include href="PrG_Roxie_Overview.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Roxie_Overview.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_SOAPenable_Queries.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_SOAPenable_Queries.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Complex_ROXIE_Queries.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Complex_ROXIE_Queries.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_SOAPCALL_fromTHOR_to_ROXIE.xml"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_SOAPCALL_fromTHOR_to_ROXIE.xml"
                 xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_control_ROXIE_queries.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_control_ROXIE_queries.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_query_libraries.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_query_libraries.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Smart_Stepping.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Smart_Stepping.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
   </chapter>
 
   <chapter>
     <title>Getting Things Done</title>
 
-    <xi:include href="PrG_Cartesian_Product_of_Two_Datasets.xml"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Cartesian_Product_of_Two_Datasets.xml"
                 xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Records_Containing_Any_Set_of_Words.xml"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Records_Containing_Any_Set_of_Words.xml"
                 xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Simple_Random_Samples.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Simple_Random_Samples.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="PrG_Hex_String_to_Decimal_String.xml"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Hex_String_to_Decimal_String.xml"
                 xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
   </chapter>
