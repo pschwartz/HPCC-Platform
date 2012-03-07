@@ -6,7 +6,7 @@
             <xsl:apply-templates select="node()"/>
         </xsl:copy>
     </xsl:template>
-    <xsl:template match="book">
+    <xsl:template match="@ROOT@">
         <book xml:base="@DOC_IMAGES@">
             <xsl:copy-of select="@*[name(.)!='xml:base']"/>
             <xsl:apply-templates select="node()"/>

@@ -15,8 +15,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-cmake_minimum_required(VERSION 2.8)
-PROJECT(ECLR)
-
-DOCBOOK_TO_PDF( ${FO_XSL} ECLR-includer.xml "Enterprise Control Language Reference")
+DOCBOOK_TO_PDF( ${FO_XSL} ECLR-includer.xml "ECLLanguageReference")
 

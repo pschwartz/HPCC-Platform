@@ -16,8 +16,6 @@
 ################################################################################
 
 
-set (VERSION_FILE ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
-set (VERSION_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 configure_file(Version.xml.in ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
 

@@ -28,6 +28,10 @@ set (DOCBOOK_XSL ${CMAKE_CURRENT_BINARY_DIR}/resources/docbook-xsl)
 set (DOC_IMAGES ${CMAKE_CURRENT_SOURCE_DIR}/)
 set (XML_CATALOG ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/catalog.xml)
 set (DOC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}")
+set (FO_XSL ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/fo.xsl)
+set (VERSION_DIR ${CMAKE_CURRENT_BINARY_DIR}/)
+
+
 if ( ${HPCC_MATURITY} STREQUAL "release" )
 	set (DOC_VERSION "${DOC_VERSION}.${HPCC_SEQUENCE}")
 else()
@@ -35,21 +39,27 @@ else()
 endif()
 
 
-add_subdirectory(resources)
 add_subdirectory(common)
 add_subdirectory(BuildTools)
+add_subdirectory(resources)
+
+#add_subdirectory(bin)
+add_subdirectory(ECLLanguageReference)
+add_subdirectory(ECLProgrammersGuide)
+#add_subdirectory(ECLReference)
+add_subdirectory(ECLStandardLibraryReference)
+#add_subdirectory(HPCCClientTools)
+add_subdirectory(HPCCDataHandling)
+add_subdirectory(HPCCDataTutorial)
+add_subdirectory(IMDB)
+add_subdirectory(Installing_and_RunningTheHPCCPlatform)
+add_subdirectory(RDDERef)
+#add_subdirectory(RuningHPCCinAmazonWebServicesEC2)
+#add_subdirectory(RunningHPCCinaVirtualMachine)
+add_subdirectory(UsingConfigManager)
 
 
 
-set (FO_XSL ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/fo.xsl)
-
-
-#DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB")
-#DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "DataHandling")
-
-#add_subdirectory(IMDB)
-add_subdirectory(ECLR_mods)
-#add_subdirectory(SLR-Mods)
 
 GET_PROPERTY(_targets GLOBAL PROPERTY DOC_TARGETS)
 add_custom_target(docs ALL DEPENDS ${_targets})

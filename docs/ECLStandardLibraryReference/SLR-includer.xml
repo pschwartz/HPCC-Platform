@@ -347,13 +347,13 @@
 
     <xi:include href="ECLStandardLibraryReference/SLR-Mods/Nodes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="ECLStandardLibraryReference/SLR-Mods/logicalToPhysical.xml"
+    <xi:include href="ECLStandardLibraryReference/SLR-Mods/LogicalToPhysical.xml"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="ECLStandardLibraryReference/SLR-Mods/daliServers.xml"
+    <xi:include href="ECLStandardLibraryReference/SLR-Mods/DaliServers.xml"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="ECLStandardLibraryReference/SLR-Mods/group.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="ECLStandardLibraryReference/SLR-Mods/Group.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
     <xi:include href="ECLStandardLibraryReference/SLR-Mods/GetExpandLogicalFileName.xml"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
