@@ -39,27 +39,30 @@ else()
 endif()
 
 
+# Required directories to add.
 add_subdirectory(common)
 add_subdirectory(BuildTools)
 add_subdirectory(resources)
 
-#add_subdirectory(bin)
+
+# Doc dirs to include.
 add_subdirectory(ECLLanguageReference)
 add_subdirectory(ECLProgrammersGuide)
 #add_subdirectory(ECLReference)
 add_subdirectory(ECLStandardLibraryReference)
-#add_subdirectory(HPCCClientTools)
+add_subdirectory(HPCCClientTools)
 add_subdirectory(HPCCDataHandling)
 add_subdirectory(HPCCDataTutorial)
 add_subdirectory(IMDB)
 add_subdirectory(Installing_and_RunningTheHPCCPlatform)
 add_subdirectory(RDDERef)
-#add_subdirectory(RuningHPCCinAmazonWebServicesEC2)
-#add_subdirectory(RunningHPCCinaVirtualMachine)
+add_subdirectory(RunningHPCCinaVirtualMachine)
 add_subdirectory(UsingConfigManager)
 
 
 
+#WIP -  Docs
+#add_subdirectory(RuningHPCCinAmazonWebServicesEC2)
 
 GET_PROPERTY(_targets GLOBAL PROPERTY DOC_TARGETS)
 add_custom_target(docs ALL DEPENDS ${_targets})

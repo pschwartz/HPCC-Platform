@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-<book>
+<book xml:base="../../">
   <bookinfo>
     <title>The ECL Compiler</title>
 
@@ -74,7 +74,7 @@
 
           <tbody>
             <row>
-              <entry><inlinegraphic fileref="images/OSSgr3.png" /></entry>
+              <entry><inlinegraphic xml:base="../../" fileref="images/OSSgr3.png" /></entry>
 
               <entry>To compile and run ECL code locally on your Windows
               machine, you will need the Microsoft Visual Studio 2008 C++
@@ -203,7 +203,7 @@
            <colspec />
             <tbody>
               <row>
-                <entry><inlinegraphic fileref="images/OSSgr3.png" /></entry>
+                <entry><inlinegraphic xml:base="../../" fileref="images/OSSgr3.png" /></entry>
 
                 <entry><emphasis role="bold">NOTE: </emphasis>If there are
                 spaces in the path you specify, put it in quotes. For example:

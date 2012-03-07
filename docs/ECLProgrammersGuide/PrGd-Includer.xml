@@ -103,7 +103,7 @@
     <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Indexing_Superfiles.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Using_SuperKeys.xml" xpointer="element(/1)"
+    <xi:include href="ECLProgrammersGuide/PRG_Mods/PrG_Using_Superkeys.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
   </chapter>
 

@@ -608,7 +608,7 @@ sudo configmgr</programlisting>
             <para>Expand the <emphasis role="bold">Software</emphasis>
             section, if necessary, in the Navigator panel on the left side, by
             clicking on the <inlinegraphic
-            fileref="images/expandbutton.png" /> button.</para>
+            fileref="images/expandButton.png" /> button.</para>
           </listitem>
         </itemizedlist>
       </sect2>
