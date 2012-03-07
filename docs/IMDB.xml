@@ -31,7 +31,7 @@
       fictitious. Any similarity to actual persons, living or dead, is purely
       coincidental.</para>
 
-      <para></para>
+      <para />
     </legalnotice>
 
     <xi:include href="Version.xml" xpointer="FooterInfo"

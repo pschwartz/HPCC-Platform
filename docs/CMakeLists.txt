@@ -27,20 +27,29 @@ set (DOCBOOK_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/resources)
 set (DOCBOOK_XSL ${CMAKE_CURRENT_BINARY_DIR}/resources/docbook-xsl)
 set (DOC_IMAGES ${CMAKE_CURRENT_SOURCE_DIR}/)
 set (XML_CATALOG ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/catalog.xml)
+set (DOC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}")
+if ( ${HPCC_MATURITY} STREQUAL "release" )
+	set (DOC_VERSION "${DOC_VERSION}.${HPCC_SEQUENCE}")
+else()
+	set (DOC_VERSION "${DOC_VERSION}.${HPCC_SEQUENCE}${HPCC_MATURITY}")
+endif()
+
 
 add_subdirectory(resources)
 add_subdirectory(BuildTools)
 
 set (VERSION_FILE ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
+set (VERSION_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 configure_file(Version.xml.in ${CMAKE_CURRENT_BINARY_DIR}/Version.xml)
 
 set (FO_XSL ${CMAKE_CURRENT_BINARY_DIR}/BuildTools/fo.xsl)
 
 
-DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB")
+#DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB")
 DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "DataHandling")
 
+add_subdirectory(IMDB)
 add_subdirectory(ECLR_mods)
 add_subdirectory(SLR-Mods)
 

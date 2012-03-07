@@ -18,6 +18,5 @@
 cmake_minimum_required(VERSION 2.8)
 PROJECT(ECLR)
 
-set (DOC_IMAGES ${CMAKE_CURRENT_SOURCE_DIR}/)
 DOCBOOK_TO_PDF( ${FO_XSL} ECLR-includer.xml "Enterprise Control Language Reference")
 
