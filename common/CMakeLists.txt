@@ -16,16 +16,24 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
-add_subdirectory (commonext)
+
 add_subdirectory (deftype)
 add_subdirectory (dllserver)
 add_subdirectory (environment)
-add_subdirectory (fileview2)
-add_subdirectory (monitoring)
 add_subdirectory (remote)
-add_subdirectory (roxiecommlib)
-add_subdirectory (roxiehelper)
-add_subdirectory (roxiemanager)
 add_subdirectory (thorhelper)
 add_subdirectory (workunit)
+add_subdirectory (fileview2)
+add_subdirectory (roxiecommlib)
+add_subdirectory (commonext)
+
+
+if ( WITH_ESP )
+    add_subdirectory (monitoring)
+endif()
+
+if ( WITH_ROXIE )
+    add_subdirectory (roxiehelper)
+    add_subdirectory (roxiemanager)
+endif()
 add_subdirectory (wuwebview)
