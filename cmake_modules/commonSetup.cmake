@@ -40,6 +40,17 @@ IF ("${COMMONSETUP_DONE}" STREQUAL "")
 
   cmake_policy ( SET CMP0011 NEW )
 
+  #option(WITH_ "Enable the building of " ON)
+  
+  option(WITH_THOR "Enable the building of Thor" ON)
+  option(WITH_ROXIE "Enable the building of Roxie" ON)
+  option(WITH_ECLAGENT"Enable the building of Eclagent" ON)
+  option(WITH_ECLCCSERVER "Enable the building of ECLCCServer" ON)
+  option(WITH_ECLSCHEDULER "Enable the building of ECLScheduler" ON)
+  option(WITH_ESP "Enable the building of ESP" ON)
+  option(WITH_DALI "Enable the building of Dali" ON)
+  option(WITH_DFUSERVER "Enable the building of DFUServer" ON)
+  option(WITH_SASHA "Enable the building of Sasha" ON)
 
   option(USE_BINUTILS "Enable use of binutils to embed workunit info into dhard objects" ON)
   option(USE_CPPUNIT "Enable unit tests (requires cppunit)" OFF)
