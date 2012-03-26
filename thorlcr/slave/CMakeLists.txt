@@ -63,26 +63,27 @@ if (WIN32)
     set (CMAKE_EXE_LINKER_FLAGS "/STACK:65536 ${CMAKE_EXE_LINKER_FLAGS}")
 endif()
 
-add_executable ( thorslave_lcr ${SRCS} )
-install ( TARGETS thorslave_lcr DESTINATION ${OSSDIR}/bin )
-target_link_libraries (  thorslave_lcr 
-         jlib
-         remote 
-         commonext 
-         dalibase 
-         environment 
-         dllserver 
-         nbcd 
-         eclrtl 
-         deftype 
-         workunit 
-         thorhelper 
-         thorcodectx_lcr 
-         jhtree 
-         graph_lcr 
-         graphslave_lcr 
-         thorsort_lcr 
-         activityslaves_lcr 
-    )
-
+if ( WITH_THOR )
+    add_executable ( thorslave_lcr ${SRCS} )
+    install ( TARGETS thorslave_lcr DESTINATION ${OSSDIR}/bin )
+    target_link_libraries (  thorslave_lcr 
+             jlib
+             remote 
+             commonext 
+             dalibase 
+             environment 
+             dllserver 
+             nbcd 
+             eclrtl 
+             deftype 
+             workunit 
+             thorhelper 
+             thorcodectx_lcr 
+             jhtree 
+             graph_lcr 
+             graphslave_lcr 
+             thorsort_lcr 
+             activityslaves_lcr 
+        )
+endif()
 

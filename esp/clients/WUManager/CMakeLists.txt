@@ -45,16 +45,17 @@ include_directories (
 
 ADD_DEFINITIONS( -D_CONSOLE )
 
-add_executable ( wumanager ${SRCS} )
-add_dependencies ( wumanager espscm )
-#install ( TARGETS wumanager DESTINATION ${OSSDIR}/bin ) # do not install - this is an example program
+if ( WITH_ESP )
+    add_executable ( wumanager ${SRCS} )
+    add_dependencies ( wumanager espscm )
+    #install ( TARGETS wumanager DESTINATION ${OSSDIR}/bin ) # do not install - this is an example program
 
-target_link_libraries ( wumanager 
-         ${XALAN_LIBRARIES} ${XERCES_LIBRARIES}
-         jlib
-         xmllib 
-         esphttp
-         securesocket
-    )
-
+    target_link_libraries ( wumanager 
+             ${XALAN_LIBRARIES} ${XERCES_LIBRARIES}
+             jlib
+             xmllib 
+             esphttp
+             securesocket
+        )
+endif()
 

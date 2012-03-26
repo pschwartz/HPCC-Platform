@@ -36,10 +36,11 @@ include_directories (
 
 ADD_DEFINITIONS( -D_CONSOLE )
 
-add_executable ( roxieclienttest ${SRCS} )
-target_link_libraries ( roxieclienttest 
-         jlib
-         roxieclient 
-    )
-
+if ( WITH_ROXIE )
+    add_executable ( roxieclienttest ${SRCS} )
+    target_link_libraries ( roxieclienttest 
+             jlib
+             roxieclient 
+        )
+endif()
 

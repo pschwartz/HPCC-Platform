@@ -16,6 +16,7 @@
 ################################################################################
 
 
-
-include (datest.cmake)
-include (dfuwutest.cmake)
+if ( WITH_DALI )
+    include (datest.cmake)
+    include (dfuwutest.cmake)
+endif()

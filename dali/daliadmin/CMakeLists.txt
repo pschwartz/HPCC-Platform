@@ -42,12 +42,13 @@ include_directories (
 
 ADD_DEFINITIONS( -D_CONSOLE )
 
-add_executable ( daliadmin ${SRCS} )
-install ( TARGETS daliadmin DESTINATION ${OSSDIR}/bin )
-target_link_libraries ( daliadmin  
-         jlib
-         mp 
-         remote 
-         dalibase 
-    )
-
+if( WITH_DALI )
+    add_executable ( daliadmin ${SRCS} )
+    install ( TARGETS daliadmin DESTINATION ${OSSDIR}/bin )
+    target_link_libraries ( daliadmin  
+             jlib
+             mp 
+             remote 
+             dalibase 
+        )
+endif()

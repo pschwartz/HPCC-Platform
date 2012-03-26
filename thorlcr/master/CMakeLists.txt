@@ -65,30 +65,31 @@ if (WIN32)
     set (CMAKE_EXE_LINKER_FLAGS "/STACK:65536 ${CMAKE_EXE_LINKER_FLAGS}")
 endif()
 
-add_executable ( thormaster_lcr ${SRCS} )
-install ( TARGETS thormaster_lcr DESTINATION ${OSSDIR}/bin )
-target_link_libraries (  thormaster_lcr 
-         jlib
-         jhtree 
-         remote 
-         dalibase 
-         environment 
-         dllserver 
-         nbcd 
-         eclrtl 
-         deftype 
-         workunit 
-         commonext 
-         graph_lcr 
-         thorsort_lcr 
-         thorhelper 
-         thorcodectx_lcr 
-         dalift 
-         mfilemanager_lcr 
-         graphmaster_lcr 
-         activitymasters_lcr 
-         swapnodelib
-    )
-
+if ( WITH_THOR )
+    add_executable ( thormaster_lcr ${SRCS} )
+    install ( TARGETS thormaster_lcr DESTINATION ${OSSDIR}/bin )
+    target_link_libraries (  thormaster_lcr 
+             jlib
+             jhtree 
+             remote 
+             dalibase 
+             environment 
+             dllserver 
+             nbcd 
+             eclrtl 
+             deftype 
+             workunit 
+             commonext 
+             graph_lcr 
+             thorsort_lcr 
+             thorhelper 
+             thorcodectx_lcr 
+             dalift 
+             mfilemanager_lcr 
+             graphmaster_lcr 
+             activitymasters_lcr 
+             swapnodelib
+        )
+endif()
 
 

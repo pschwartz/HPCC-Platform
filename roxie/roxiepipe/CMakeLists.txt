@@ -38,9 +38,10 @@ include_directories (
 
 ADD_DEFINITIONS( -D_CONSOLE )
 
-add_executable ( roxiepipe ${SRCS} )
-install ( TARGETS roxiepipe DESTINATION ${OSSDIR}/bin )
-target_link_libraries ( roxiepipe
-         jlib
-    )
-
+if ( WITH_ROXIE )
+    add_executable ( roxiepipe ${SRCS} )
+    install ( TARGETS roxiepipe DESTINATION ${OSSDIR}/bin )
+    target_link_libraries ( roxiepipe
+             jlib
+        )
+endif()

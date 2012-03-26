@@ -37,16 +37,18 @@ include_directories (
          ./../../system/jlib 
     )
 
-add_executable ( ftslave ${SRCS} )
-set_target_properties (ftslave PROPERTIES COMPILE_FLAGS -D_CONSOLE)
-install ( TARGETS ftslave DESTINATION ${OSSDIR}/bin )
-target_link_libraries ( ftslave
-         jlib
-         mp 
-         hrpc 
-         remote 
-         dalibase 
-         environment 
-         dalift 
-    )
+if ( WITH_DFUSERVER )
+    add_executable ( ftslave ${SRCS} )
+    set_target_properties (ftslave PROPERTIES COMPILE_FLAGS -D_CONSOLE)
+    install ( TARGETS ftslave DESTINATION ${OSSDIR}/bin )
+    target_link_libraries ( ftslave
+             jlib
+             mp 
+             hrpc 
+             remote 
+             dalibase 
+             environment 
+             dalift 
+        )
 
+endif()

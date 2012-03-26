@@ -54,14 +54,15 @@ if (WIN32)
     endif ()
 endif()
 
-add_executable ( daserver ${SRCS} )
-install ( TARGETS daserver DESTINATION ${OSSDIR}/bin)
-target_link_libraries ( daserver 
-         jlib
-         LdapSecurity 
-         mp 
-         hrpc 
-         remote 
-         dalibase 
-    )
-
+if ( WITH_DALI )
+    add_executable ( daserver ${SRCS} )
+    install ( TARGETS daserver DESTINATION ${OSSDIR}/bin)
+    target_link_libraries ( daserver 
+             jlib
+             LdapSecurity 
+             mp 
+             hrpc 
+             remote 
+             dalibase 
+        )
+endif()
