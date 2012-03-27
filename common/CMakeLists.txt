@@ -26,14 +26,14 @@ add_subdirectory (workunit)
 add_subdirectory (fileview2)
 add_subdirectory (roxiecommlib)
 add_subdirectory (commonext)
-
+add_subdirectory (roxiehelper)
+add_subdirectory (wuwebview)
 
 if ( WITH_ESP )
     add_subdirectory (monitoring)
 endif()
 
 if ( WITH_ROXIE )
-    add_subdirectory (roxiehelper)
     add_subdirectory (roxiemanager)
 endif()
-add_subdirectory (wuwebview)
+
