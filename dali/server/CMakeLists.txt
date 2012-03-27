@@ -43,7 +43,6 @@ include_directories (
          ${CMAKE_BINARY_DIR}
          ${CMAKE_BINARY_DIR}/oss
     )
-
 ADD_DEFINITIONS( -D_CONSOLE )
 
 if (WIN32)
@@ -65,4 +64,7 @@ if ( WITH_DALI )
              remote 
              dalibase 
         )
+    IF (USE_OPENLDAP)
+        target_link_libraries ( daserver LdapSecurity )
+    ENDIF(USE_OPENLDAP)
 endif()

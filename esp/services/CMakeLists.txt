@@ -18,6 +18,9 @@
 ################################################################################
 if ( WITH_ESP )
     add_subdirectory (ecldirect)
+    IF (USE_OPENLDAP)
+        add_subdirectory (ws_access)
+    ENDIF(USE_OPENLDAP)
     add_subdirectory (ws_access)
     add_subdirectory (ws_account)
     add_subdirectory (ws_config)
