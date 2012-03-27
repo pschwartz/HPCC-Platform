@@ -29,8 +29,7 @@ add_subdirectory (eclagent)
 add_subdirectory (eclccserver)
 add_subdirectory (eclscheduler)
 
-# not linked against
-#add_subdirectory (hthor)
+add_subdirectory (hthor)
 
 add_subdirectory (scheduleadmin)
 add_subdirectory (schedulectrl)
