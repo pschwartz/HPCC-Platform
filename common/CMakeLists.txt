@@ -33,6 +33,7 @@ if ( WITH_ESP )
     add_subdirectory (monitoring)
 endif()
 
+add_subdirectory (roxiehelper)
 if ( WITH_ROXIE )
     add_subdirectory (roxiemanager)
 endif()

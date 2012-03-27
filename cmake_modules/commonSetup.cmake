@@ -44,7 +44,7 @@ IF ("${COMMONSETUP_DONE}" STREQUAL "")
   
   option(WITH_THOR "Enable the building of Thor" ON)
   option(WITH_ROXIE "Enable the building of Roxie" ON)
-  option(WITH_ECLAGENT"Enable the building of Eclagent" ON)
+  option(WITH_ECLAGENT "Enable the building of Eclagent" ON)
   option(WITH_ECLCCSERVER "Enable the building of ECLCCServer" ON)
   option(WITH_ECLSCHEDULER "Enable the building of ECLScheduler" ON)
   option(WITH_ESP "Enable the building of ESP" ON)
