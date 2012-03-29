@@ -52,7 +52,7 @@ include_directories (
 ADD_DEFINITIONS( -D_USRDLL -DREMOTE_EXPORTS )
 
 HPCC_ADD_LIBRARY( remote SHARED ${SRCS}  )
-install ( TARGETS remote DESTINATION ${OSSDIR}/lib )
+install ( TARGETS remote DESTINATION ${OSSDIR}/lib COMPONENT common )
 
 target_link_libraries ( remote 
     jlib 

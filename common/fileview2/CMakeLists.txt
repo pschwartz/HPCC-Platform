@@ -82,7 +82,7 @@ HPCC_ADD_LIBRARY( fileview2 SHARED ${SRCS} )
 set_target_properties(fileview2 PROPERTIES 
     COMPILE_FLAGS -D_USRDLL
     DEFINE_SYMBOL FILEVIEW2_EXPORTS )
-install ( TARGETS fileview2 DESTINATION ${OSSDIR}/lib )
+install ( TARGETS fileview2 DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( fileview2 
          jlib 
          mp 

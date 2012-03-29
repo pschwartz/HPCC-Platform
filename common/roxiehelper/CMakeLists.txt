@@ -48,7 +48,7 @@ set ( SRCS roxiehelper.cpp roxiedebug.cpp roxierow.cpp
            roxiehelper.hpp roxiedebug.hpp roxierow.hpp roxielmj.hpp)
 
 HPCC_ADD_LIBRARY( roxiehelper SHARED ${SRCS} )
-install ( TARGETS roxiehelper DESTINATION ${OSSDIR}/lib )
+install ( TARGETS roxiehelper DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( roxiehelper
          jlib 
          eclrtl 

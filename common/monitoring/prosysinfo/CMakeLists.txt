@@ -30,4 +30,4 @@ set (    SRCS
     )
 
 add_executable ( prosysinfo ${SRCS} )
-install ( TARGETS prosysinfo DESTINATION ${OSSDIR}/bin )
+install ( TARGETS prosysinfo DESTINATION ${OSSDIR}/bin COMPONENT platform )

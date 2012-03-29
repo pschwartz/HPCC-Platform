@@ -47,7 +47,7 @@ include_directories (
 ADD_DEFINITIONS( -D_USRDLL -DDEFTYPE_EXPORTS )
 
 HPCC_ADD_LIBRARY( deftype SHARED ${SRCS} )
-install ( TARGETS deftype DESTINATION ${OSSDIR}/lib )
+install ( TARGETS deftype DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( deftype 
          jlib 
          nbcd

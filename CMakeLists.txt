@@ -48,7 +48,7 @@
 #
 #########################################################
 
-project (hpccsystems-platform)
+project (hpccsystems)
 cmake_minimum_required (VERSION 2.6)
 
 include(CTest)
@@ -172,11 +172,11 @@ if ( CMAKE_SYSTEM MATCHES Linux )
     message ( "-- distro uses ${packageManagement}, revision is ${packageRevisionArch}" )
 
     if ( ${packageManagement} STREQUAL "DEB" )
-        set(CPACK_PACKAGE_FILE_NAME	"${CMAKE_PROJECT_NAME}_${CPACK_RPM_PACKAGE_VERSION}-${version}-${stagever}${packageRevisionArch}")
+        #set(CPACK_PACKAGE_FILE_NAME	"${CMAKE_PROJECT_NAME}_${CPACK_RPM_PACKAGE_VERSION}-${version}-${stagever}${packageRevisionArch}")
     elseif ( ${packageManagement} STREQUAL "RPM" )
-        set(CPACK_PACKAGE_FILE_NAME	"${CMAKE_PROJECT_NAME}_${CPACK_RPM_PACKAGE_VERSION}-${version}-${stagever}.${packageRevisionArch}")
+        #set(CPACK_PACKAGE_FILE_NAME	"${CMAKE_PROJECT_NAME}_${CPACK_RPM_PACKAGE_VERSION}-${version}-${stagever}.${packageRevisionArch}")
         else()
-        set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}${CPACK_SYSTEM_NAME}")
+        #set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}${CPACK_SYSTEM_NAME}")
     endif ()
 endif ( CMAKE_SYSTEM MATCHES Linux )
 MESSAGE ("-- Current release version is ${CPACK_PACKAGE_FILE_NAME}")
@@ -242,7 +242,8 @@ message ("-- Build tag is '${BUILD_TAG}'")
 configure_file(${HPCC_SOURCE_DIR}/build-config.h.cmake "build-config.h" )
 
 #set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )
-#set( CPACK_DEB_PACKAGE_COMPONENT ON )
+set( CPACK_DEB_COMPONENT_INSTALL ON )
+set(CPACK_PACKAGE_FILE_NAME_TEMPLATE "CPACK_PACKAGE_NAME;CPACK_COMPONENT_NAME;CPACK_PACKAGE_VERSION;CPACK_SYSTEM_NAME;")
 
 
 ###
@@ -297,5 +298,5 @@ endif()
 ## the hpcc platform.
 ###
 
-Install ( FILES ${HPCC_SOURCE_DIR}/${LICENSE_FILE} DESTINATION ${OSSDIR} COMPONENT Runtime )
+Install ( FILES ${HPCC_SOURCE_DIR}/${LICENSE_FILE} DESTINATION ${OSSDIR} COMPONENT platform )
 include (CPack)
