@@ -41,7 +41,7 @@ include_directories (
 ADD_DEFINITIONS ( -D_CONSOLE )
 
 add_executable ( configgen ${SRCS} )
-install ( TARGETS configgen DESTINATION ${OSSDIR}/sbin )
+install ( TARGETS configgen DESTINATION ${OSSDIR}/sbin COMPONENT platform )
 target_link_libraries ( configgen 
         deploy 
         jlib 

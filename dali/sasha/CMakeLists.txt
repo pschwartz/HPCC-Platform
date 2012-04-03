@@ -69,7 +69,7 @@ if (WIN32)
 endif()
 
 add_executable ( saserver ${SRCS} )
-install ( TARGETS saserver DESTINATION ${OSSDIR}/bin)
+install ( TARGETS saserver DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 
 if ( ${HAVE_LIBCRYPT} )
@@ -104,7 +104,7 @@ include_directories (
 ADD_DEFINITIONS ( -D_CONSOLE )
 
 add_executable ( sasha ${SRCS} )
-install ( TARGETS sasha DESTINATION ${OSSDIR}/bin)
+install ( TARGETS sasha DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 target_link_libraries ( sasha 
          ${XALAN_LIBRARIES} ${XERCES_LIBRARIES}

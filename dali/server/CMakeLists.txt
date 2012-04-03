@@ -54,7 +54,7 @@ if (WIN32)
 endif()
 
 add_executable ( daserver ${SRCS} )
-install ( TARGETS daserver DESTINATION ${OSSDIR}/bin)
+install ( TARGETS daserver DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( daserver 
          jlib
          mp 
