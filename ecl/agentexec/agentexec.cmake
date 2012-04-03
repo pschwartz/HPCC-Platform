@@ -45,7 +45,7 @@ include_directories (
 ADD_DEFINITIONS ( -D_CONSOLE )
 
 add_executable ( agentexec ${SRCS} )
-install ( TARGETS agentexec DESTINATION ${OSSDIR}/bin )
+install ( TARGETS agentexec DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 target_link_libraries ( agentexec
          jlib 

@@ -21,7 +21,7 @@ FOREACH ( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/exceptions.xslt
     ${CMAKE_CURRENT_SOURCE_DIR}/BoolResponse.xslt
 )
-    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/xslt COMPONENT Runtime )
+    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/xslt COMPONENT platform )
 ENDFOREACH ( iFILES )
 
 FOREACH ( iFILES
@@ -171,7 +171,7 @@ FOREACH ( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/account_input.xslt
     ${CMAKE_CURRENT_SOURCE_DIR}/account_whoami.xslt
 )
-    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/smc_xslt COMPONENT Runtime )
+    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/smc_xslt COMPONENT platform )
 ENDFOREACH ( iFILES )
 
 FOREACH ( iFILES
@@ -179,5 +179,5 @@ FOREACH ( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/result_lib.xslt
     ${CMAKE_CURRENT_SOURCE_DIR}/lib.xslt
 )
-    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/wsecl/wsecl COMPONENT Runtime )
+    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/wsecl/wsecl COMPONENT platform )
 ENDFOREACH ( iFILES )

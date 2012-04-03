@@ -66,7 +66,7 @@ if (WIN32)
 endif()
 
 add_executable ( thormaster_lcr ${SRCS} )
-install ( TARGETS thormaster_lcr DESTINATION ${OSSDIR}/bin )
+install ( TARGETS thormaster_lcr DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries (  thormaster_lcr 
          jlib
          jhtree 

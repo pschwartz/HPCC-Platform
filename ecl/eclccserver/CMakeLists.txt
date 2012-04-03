@@ -46,7 +46,7 @@ include_directories (
     )
 
 add_executable ( eclccserver ${SRCS} ${INCLUDES} )
-install ( TARGETS eclccserver DESTINATION ${OSSDIR}/bin )
+install ( TARGETS eclccserver DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 target_link_libraries ( eclccserver 
          jlib

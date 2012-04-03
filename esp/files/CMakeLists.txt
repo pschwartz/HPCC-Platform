@@ -53,12 +53,12 @@ FOREACH( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/useradd.html
     ${CMAKE_CURRENT_SOURCE_DIR}/groupadd.html
 )
-    Install( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/files COMPONENT Runtime )
+    Install( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/files COMPONENT platform )
 ENDFOREACH ( iFILES )
 
-Install ( FILES ${CMAKE_CURRENT_SOURCE_DIR}/popup.js DESTINATION ${OSSDIR}/componentfiles/files/scripts COMPONENT Runtime )
+Install ( FILES ${CMAKE_CURRENT_SOURCE_DIR}/popup.js DESTINATION ${OSSDIR}/componentfiles/files/scripts COMPONENT platform )
 
-Install ( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/yui DESTINATION ${OSSDIR}/componentfiles/files COMPONENT Runtime USE_SOURCE_PERMISSIONS PATTERN ".svn" EXCLUDE )
+Install ( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/yui DESTINATION ${OSSDIR}/componentfiles/files COMPONENT platform USE_SOURCE_PERMISSIONS PATTERN ".svn" EXCLUDE )
 
 add_subdirectory (css)
 add_subdirectory (html)

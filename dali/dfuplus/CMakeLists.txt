@@ -59,7 +59,7 @@ ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( dfuplus ${SRCS} )
 add_dependencies ( dfuplus espscm )
-install ( TARGETS dfuplus DESTINATION ${OSSDIR}/bin )
+install ( TARGETS dfuplus DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( dfuplus
          jlib
          remote

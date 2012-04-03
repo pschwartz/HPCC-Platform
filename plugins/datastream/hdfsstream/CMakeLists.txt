@@ -28,10 +28,10 @@ if ( USE_HDFSSTREAM )
 
 	add_executable( hdfsstream ${SRC} )
 
-#	Install ( TARGETS hdfsstream DESTINATION ${DIR_NAME}/bin COMPONENT Runtime)
-#	Install ( PROGRAMS hdfspipe DESTINATION ${DIR_NAME}/bin COMPONENT Runtime )
-#	Install ( FILES ${CMAKE_CURRENT_BINARY_DIR}/hdfsstreamconfig DESTINATION ${CONFIG_DIR}/rpmnew COMPONENT Runtime )
-#	Install ( FILES ${CMAKE_CURRENT_BINARY_DIR}/hdfsstreamconfig DESTINATION ${DIR_NAME}/bin COMPONENT Runtime )
+#	Install ( TARGETS hdfsstream DESTINATION ${DIR_NAME}/bin COMPONENT platform)
+#	Install ( PROGRAMS hdfspipe DESTINATION ${DIR_NAME}/bin COMPONENT platform )
+#	Install ( FILES ${CMAKE_CURRENT_BINARY_DIR}/hdfsstreamconfig DESTINATION ${CONFIG_DIR}/rpmnew COMPONENT platform )
+#	Install ( FILES ${CMAKE_CURRENT_BINARY_DIR}/hdfsstreamconfig DESTINATION ${DIR_NAME}/bin COMPONENT platform )
 	target_link_libraries ( hdfsstream
 					${JAVA_JVM_LIBRARY}
 					${LIBHDFS_LIBRARIES})

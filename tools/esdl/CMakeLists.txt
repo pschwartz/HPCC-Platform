@@ -53,5 +53,5 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE -O0 )
 
 add_executable ( esdl ${SRCS} )
-#install ( TARGETS esdl DESTINATION ${OSSDIR}/bin )
+#install ( TARGETS esdl DESTINATION ${OSSDIR}/bin COMPONENT platform )
 

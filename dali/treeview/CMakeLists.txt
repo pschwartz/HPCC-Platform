@@ -46,7 +46,7 @@ if (WIN32)
 
     add_definitions("-D_AFXDLL")
     add_executable ( treeview WIN32 ${SRCS} )
-    install ( TARGETS treeview DESTINATION ${OSSDIR}/bin )
+    install ( TARGETS treeview DESTINATION ${OSSDIR}/bin COMPONENT platform )
     target_link_libraries ( treeview
              jlib
              mp 

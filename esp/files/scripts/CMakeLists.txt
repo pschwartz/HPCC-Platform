@@ -44,5 +44,5 @@ FOREACH( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/tree_template.js
     ${CMAKE_CURRENT_SOURCE_DIR}/ui_engine.js
 )
-    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/files/scripts COMPONENT Runtime )
+    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/files/scripts COMPONENT platform )
 ENDFOREACH ( iFILES )

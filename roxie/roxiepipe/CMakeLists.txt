@@ -39,7 +39,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( roxiepipe ${SRCS} )
-install ( TARGETS roxiepipe DESTINATION ${OSSDIR}/bin )
+install ( TARGETS roxiepipe DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( roxiepipe
          jlib
     )

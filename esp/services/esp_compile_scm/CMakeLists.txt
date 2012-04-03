@@ -152,6 +152,6 @@ set (    SRCS
 
 # OBJS = 
 add_executable ( esp_compile_scm ${SRCS} )
-install ( TARGETS esp_compile_scm DESTINATION ${OSSDIR}/bin )
+install ( TARGETS esp_compile_scm DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 

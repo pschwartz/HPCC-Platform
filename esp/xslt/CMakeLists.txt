@@ -44,7 +44,7 @@ FOREACH( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/wsecl3_jsontest.xsl
     ${CMAKE_CURRENT_SOURCE_DIR}/wsecl3_result.xslt
 )
-    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/xslt COMPONENT Runtime )
+    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/xslt COMPONENT platform )
 ENDFOREACH ( iFILES )
 
 FOREACH ( iFILES
@@ -52,5 +52,5 @@ FOREACH ( iFILES
     ${CMAKE_CURRENT_SOURCE_DIR}/wsecl_tabview.xsl
     ${CMAKE_CURRENT_SOURCE_DIR}/wsecl_tree.xsl
 )
-    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/files COMPONENT Runtime )
+    Install ( FILES ${iFILES} DESTINATION ${OSSDIR}/componentfiles/files COMPONENT platform )
 ENDFOREACH ( iFILES )

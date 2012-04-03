@@ -43,7 +43,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( daregress ${SRCS} )
-install ( TARGETS daregress DESTINATION ${OSSDIR}/bin )
+install ( TARGETS daregress DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( daregress  
          jlib
          mp 

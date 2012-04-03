@@ -41,7 +41,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( dalistop ${SRCS} )
-install ( TARGETS dalistop DESTINATION ${OSSDIR}/bin )
+install ( TARGETS dalistop DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( dalistop 
          jlib
          mp 

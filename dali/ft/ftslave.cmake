@@ -39,7 +39,7 @@ include_directories (
 
 add_executable ( ftslave ${SRCS} )
 set_target_properties (ftslave PROPERTIES COMPILE_FLAGS -D_CONSOLE)
-install ( TARGETS ftslave DESTINATION ${OSSDIR}/bin )
+install ( TARGETS ftslave DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( ftslave
          jlib
          mp 

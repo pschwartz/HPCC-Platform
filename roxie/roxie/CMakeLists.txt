@@ -54,7 +54,7 @@ if (WIN32)
 endif()
 
 add_executable ( roxie ${SRCS} )
-install ( TARGETS roxie DESTINATION ${OSSDIR}/bin )
+install ( TARGETS roxie DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 target_link_libraries ( roxie
          ccd

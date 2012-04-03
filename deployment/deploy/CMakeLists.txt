@@ -56,7 +56,7 @@ include_directories (
 ADD_DEFINITIONS ( -D_USRDLL -DDEPLOY_EXPORTS )
 
 HPCC_ADD_LIBRARY( deploy SHARED ${SRCS} )
-install ( TARGETS deploy DESTINATION ${OSSDIR}/lib )
+install ( TARGETS deploy DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( deploy 
          jlib 
          environment 

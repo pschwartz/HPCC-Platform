@@ -39,7 +39,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( combine ${SRCS} )
-install ( TARGETS combine DESTINATION ${OSSDIR}/bin )
+install ( TARGETS combine DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( combine
          jlib
     )

@@ -40,7 +40,7 @@ include_directories (
 ADD_DEFINITIONS ( -D_CONSOLE )
 
 add_executable ( udptransport ${SRCS} )
-#install ( TARGETS udptransport DESTINATION ${OSSDIR}/bin )
+#install ( TARGETS udptransport DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( udptransport 
          jlib
          roxiemem 

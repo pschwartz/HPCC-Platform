@@ -42,7 +42,7 @@ include_directories (
 
 add_executable ( dafscontrol ${SRCS} )
 set_target_properties (dafscontrol PROPERTIES COMPILE_FLAGS -D_CONSOLE)
-install ( TARGETS dafscontrol DESTINATION ${OSSDIR}/bin )
+install ( TARGETS dafscontrol DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( dafscontrol  
          jlib
          mp 

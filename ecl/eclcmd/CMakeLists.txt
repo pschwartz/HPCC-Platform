@@ -67,7 +67,7 @@ ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( ecl ${SRCS} )
 add_dependencies ( ecl espscm workunit ws_workunits )
-install ( TARGETS ecl DESTINATION ${OSSDIR}/bin )
+install ( TARGETS ecl DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( ecl
         jlib
         esphttp

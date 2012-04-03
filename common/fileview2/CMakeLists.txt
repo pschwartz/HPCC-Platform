@@ -110,7 +110,7 @@ add_executable ( fvserver ${SRCS} )
 set_target_properties(fvserver PROPERTIES 
     COMPILE_FLAGS -D_CONSOLE
     )
-#install ( TARGETS fvserver DESTINATION ${OSSDIR}/bin ) #not used at present
+#install ( TARGETS fvserver DESTINATION ${OSSDIR}/bin COMPONENT platform ) #not used at present
 
 target_link_libraries ( fvserver
          jlib 

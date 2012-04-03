@@ -42,6 +42,6 @@ add_executable ( genht ${SRCS} )
 target_link_libraries ( genht
         jlib 
     )
-install ( TARGETS genht DESTINATION ${OSSDIR}/bin )
+install ( TARGETS genht DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 

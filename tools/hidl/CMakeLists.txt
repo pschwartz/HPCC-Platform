@@ -53,4 +53,4 @@ set_source_files_properties (${CMAKE_CURRENT_BINARY_DIR}/hidlgram.cpp PROPERTIES
 
 ADD_DEFINITIONS( -D_CONSOLE)
 add_executable ( hidl ${SRCS} )
-#install ( TARGETS hidl DESTINATION ${OSSDIR}/bin )
+#install ( TARGETS hidl DESTINATION ${OSSDIR}/bin COMPONENT platform )

@@ -41,7 +41,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( dalidiag ${SRCS} )
-install ( TARGETS dalidiag DESTINATION ${OSSDIR}/bin )
+install ( TARGETS dalidiag DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( dalidiag 
          jlib
          mp 

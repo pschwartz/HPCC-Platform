@@ -45,7 +45,7 @@ include_directories (
     )
 
 add_executable ( eclscheduler ${SRCS} ${INCLUDES} )
-install ( TARGETS eclscheduler DESTINATION ${OSSDIR}/bin )
+install ( TARGETS eclscheduler DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 target_link_libraries ( eclscheduler 
          jlib

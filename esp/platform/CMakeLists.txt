@@ -50,7 +50,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( esp ${SRCS} )
-install ( TARGETS esp DESTINATION ${OSSDIR}/bin )
+install ( TARGETS esp DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( esp 
          jlib
          mp 

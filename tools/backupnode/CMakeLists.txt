@@ -42,7 +42,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( backupnode ${SRCS} )
-install ( TARGETS backupnode DESTINATION ${OSSDIR}/bin )
+install ( TARGETS backupnode DESTINATION ${OSSDIR}/bin COMPONENT platform )
 
 target_link_libraries (  backupnode 
          jlib

@@ -58,7 +58,7 @@ HPCC_ADD_LIBRARY( graphmaster_lcr SHARED ${SRCS} )
 set_target_properties(graphmaster_lcr PROPERTIES 
     COMPILE_FLAGS -D_USRDLL
     DEFINE_SYMBOL GRAPHMASTER_EXPORTS )
-install ( TARGETS graphmaster_lcr DESTINATION ${OSSDIR}/lib )
+install ( TARGETS graphmaster_lcr DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( graphmaster_lcr
          jlib
          commonext 

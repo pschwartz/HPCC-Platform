@@ -46,7 +46,7 @@ if (${CMAKE_COMPILER_IS_GNUCXX})
 endif (${CMAKE_COMPILER_IS_GNUCXX})
 
 HPCC_ADD_LIBRARY( roxiemem SHARED ${SRCS} ${INCLUDES})
-install ( TARGETS roxiemem DESTINATION ${OSSDIR}/lib )
+install ( TARGETS roxiemem DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( roxiemem 
          jlib 
          ${CPPUNIT_LIBRARIES}

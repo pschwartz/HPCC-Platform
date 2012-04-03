@@ -41,7 +41,7 @@ include_directories (
 ADD_DEFINITIONS( -D_USRDLL -DNBCD_EXPORTS )
 
 HPCC_ADD_LIBRARY( nbcd SHARED ${SRCS} )
-install ( TARGETS nbcd DESTINATION ${OSSDIR}/lib )
+install ( TARGETS nbcd DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( nbcd 
       jlib
       ${CPPUNIT_LIBRARIES}

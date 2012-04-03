@@ -123,7 +123,7 @@ add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/hqllex.cpp
 ADD_DEFINITIONS( -D_USRDLL -DHQL_EXPORTS -DHQLFOLD_EXPORTS -DHQLTRANS_EXPORTS )
 
 HPCC_ADD_LIBRARY( hql SHARED ${SRCS} ${CMAKE_CURRENT_BINARY_DIR}/hqlgram.cpp ${CMAKE_CURRENT_BINARY_DIR}/hqllex.cpp  )
-install ( TARGETS hql DESTINATION ${OSSDIR}/lib )
+install ( TARGETS hql DESTINATION ${OSSDIR}/lib COMPONENT common )
 target_link_libraries ( hql  
          jlib
          nbcd 

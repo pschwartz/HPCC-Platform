@@ -39,7 +39,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( myssl ${SRCS} )
-install ( TARGETS myssl DESTINATION ${OSSDIR}/bin )
+install ( TARGETS myssl DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( myssl 
          jlib
          securesocket 

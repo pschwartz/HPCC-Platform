@@ -41,7 +41,7 @@ endif()
 
 add_executable ( dafilesrv ${SRCS} )
 set_target_properties (dafilesrv PROPERTIES COMPILE_FLAGS -D_CONSOLE)
-install ( TARGETS dafilesrv DESTINATION ${OSSDIR}/bin )
+install ( TARGETS dafilesrv DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( dafilesrv
          jlib
          remote

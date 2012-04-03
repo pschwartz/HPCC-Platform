@@ -47,7 +47,7 @@ include_directories (
 ADD_DEFINITIONS ( -D_CONSOLE )
 
 add_executable ( frunagent ${SRCS} )
-install ( TARGETS frunagent DESTINATION ${OSSDIR}/bin )
+install ( TARGETS frunagent DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( frunagent 
          jlib
          homisc 

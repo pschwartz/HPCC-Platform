@@ -64,7 +64,7 @@ if (WIN32)
 endif()
 
 add_executable ( thorslave_lcr ${SRCS} )
-install ( TARGETS thorslave_lcr DESTINATION ${OSSDIR}/bin )
+install ( TARGETS thorslave_lcr DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries (  thorslave_lcr 
          jlib
          remote 

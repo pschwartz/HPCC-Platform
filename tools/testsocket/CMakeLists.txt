@@ -36,5 +36,5 @@ add_executable ( testsocket ${SRCS} )
 target_link_libraries ( testsocket
          jlib
          )
-install ( TARGETS testsocket DESTINATION ${OSSDIR}/bin )
+install ( TARGETS testsocket DESTINATION ${OSSDIR}/bin COMPONENT platform )
 

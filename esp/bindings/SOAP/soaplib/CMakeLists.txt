@@ -69,7 +69,7 @@ if (WIN32)
         )
 else (WIN32)
     HPCC_ADD_LIBRARY( soaplib SHARED ${SRCS} )
-    install ( TARGETS soaplib DESTINATION ${OSSDIR}/lib )
+    install ( TARGETS soaplib DESTINATION ${OSSDIR}/lib COMPONENT common )
     target_link_libraries (soaplib 
         jlib
         )

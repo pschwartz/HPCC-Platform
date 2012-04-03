@@ -44,7 +44,7 @@ ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( xmllibtest ${SRCS} )
 add_dependencies ( xmllibtest xmllib )
-install ( TARGETS xmllibtest DESTINATION ${OSSDIR}/bin )
+install ( TARGETS xmllibtest DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( xmllibtest
         jlib
         xmllib

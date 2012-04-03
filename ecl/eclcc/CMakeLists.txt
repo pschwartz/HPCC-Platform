@@ -51,7 +51,7 @@ if (WIN32)
 endif()
 
 add_executable ( eclcc ${SRCS} )
-install ( TARGETS eclcc DESTINATION ${OSSDIR}/bin )
+install ( TARGETS eclcc DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( eclcc 
          jlib
          nbcd 

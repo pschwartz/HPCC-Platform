@@ -43,12 +43,12 @@ ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( ecl-package ${SRCS} )
 add_dependencies ( ecl-package espscm ws_packageprocess )
-install ( TARGETS ecl-package DESTINATION ${DIR_NAME}/bin )
+install ( TARGETS ecl-package DESTINATION ${DIR_NAME}/bin COMPONENT platform )
 target_link_libraries ( ecl-package
         jlib
         esphttp
         workunit
     )
 
-install ( PROGRAMS ecl-package.install DESTINATION ${DIR_NAME}/etc/init.d/install COMPONENT Runtime )
+install ( PROGRAMS ecl-package.install DESTINATION ${DIR_NAME}/etc/init.d/install COMPONENT platform )
 

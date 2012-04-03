@@ -42,7 +42,7 @@ include_directories (
 ADD_DEFINITIONS( -D_CONSOLE )
 
 add_executable ( xmlsize ${SRCS} )
-install ( TARGETS xmlsize DESTINATION ${OSSDIR}/bin )
+install ( TARGETS xmlsize DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( xmlsize
          jlib
     )

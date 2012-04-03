@@ -42,7 +42,7 @@ include_directories (
 ADD_DEFINITIONS( -DNO_SYBASE -D_CONSOLE )
 
 add_executable ( scheduleadmin ${SRCS} )
-install ( TARGETS scheduleadmin DESTINATION ${OSSDIR}/bin )
+install ( TARGETS scheduleadmin DESTINATION ${OSSDIR}/bin COMPONENT platform )
 target_link_libraries ( scheduleadmin 
          jlib
          remote 
