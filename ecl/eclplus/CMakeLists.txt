@@ -62,7 +62,7 @@ ADD_DEFINITIONS( -DECLPLUS_EXPORTS -D_CONSOLE )
 
 add_executable ( eclplus ${SRCS} )
 add_dependencies ( eclplus espscm )
-install ( TARGETS eclplus DESTINATION ${OSSDIR}/bin COMPONENT platform )
+install ( TARGETS eclplus DESTINATION ${OSSDIR}/bin COMPONENT clienttools )
 target_link_libraries (  eclplus 
          jlib
          esphttp 
