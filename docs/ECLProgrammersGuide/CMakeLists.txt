@@ -18,3 +18,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} PrGd-Includer.xml "ECLProgrammersGuide")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "ECLProgrammersGuide.pdf" "ECL Programmers Guide" "ECL Programmers Guide" )
+install( FILES ${DOCUMENT_BUILD_DIR}/ECLProgrammersGuide.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

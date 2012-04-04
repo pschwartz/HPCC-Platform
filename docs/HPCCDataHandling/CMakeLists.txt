@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} DataHandling.xml "HPCCDataHandling")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "HPCCDataHandling.pdf" "HPCC Data Handling" "HPCC Data Handling" )
+install( FILES ${DOCUMENT_BUILD_DIR}/HPCCDataHandling.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

@@ -38,6 +38,9 @@ else()
 	set (DOC_VERSION "${DOC_VERSION}.${HPCC_SEQUENCE}${HPCC_MATURITY}")
 endif()
 
+set( DOCUMENT_BUILD_DIR "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/docs/" )
+set( DOCUMENT_DOWNLOAD_DIR "${OSSDIR}/componentfiles/files/downloads/documentation" )
+set( DOCUMENT_FILE_LIST "" )
 
 # Required directories to add.
 add_subdirectory(common)
@@ -66,3 +69,6 @@ add_subdirectory(UsingConfigManager)
 
 GET_PROPERTY(_targets GLOBAL PROPERTY DOC_TARGETS)
 add_custom_target(docs ALL DEPENDS ${_targets})
+
+configure_file( "description.xml.in" "description.xml" )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/description.xml DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

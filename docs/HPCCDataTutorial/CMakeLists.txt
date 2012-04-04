@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} DataTutorial.xml "HPCCDataTutorial")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "HPCCDataTutorial.pdf" "HPCC Data Tutorial" "HPCC Data Tutorial" )
+install( FILES ${DOCUMENT_BUILD_DIR}/HPCCDataTutorial.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

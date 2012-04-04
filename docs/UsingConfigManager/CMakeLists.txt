@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} UsingConfigManager.xml "UsingConfigManager")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "UsingConfigManager.pdf" "HPCC Configuration Manager" "HPCC Configuration Manager" )
+install( FILES ${DOCUMENT_BUILD_DIR}/UsingConfigManager.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

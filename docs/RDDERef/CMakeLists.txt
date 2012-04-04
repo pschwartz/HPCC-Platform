@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} RDDERef.xml "RDDERef")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "RDDERef.pdf" "Rapid Data Delivery Engine Reference" "Rapid Data Delivery Engine Reference" )
+install( FILES ${DOCUMENT_BUILD_DIR}/RDDERef.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} ClientTools.xml "HPCCClientTools")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "HPCCClientTools.pdf" "HPCC Client Tools" "HPCC Client Tools" )
+install( FILES ${DOCUMENT_BUILD_DIR}/HPCCClientTools.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

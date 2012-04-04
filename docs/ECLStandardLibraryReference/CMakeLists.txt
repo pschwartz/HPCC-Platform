@@ -16,3 +16,6 @@
 ################################################################################
 
 DOCBOOK_TO_PDF( ${FO_XSL} SLR-includer.xml "ECLStandardLibraryReference")
+
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "ECLStandardLibraryReference.pdf" "ECL Standard Library Reference" "ECL Standard Library Reference" )
+install( FILES ${DOCUMENT_BUILD_DIR}/ECLStandardLibraryReference.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

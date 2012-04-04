@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} ECLR-includer.xml "ECLLanguageReference")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "ECLLanguageReference.pdf" "ECL Language Reference" "ECL Language Reference" )
+install( FILES ${DOCUMENT_BUILD_DIR}/ECLLanguageReference.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )

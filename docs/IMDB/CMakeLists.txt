@@ -17,3 +17,5 @@
 
 DOCBOOK_TO_PDF( ${FO_XSL} IMDB.xml "IMDB")
 
+FILE_LIST_GENERATOR( "DOCUMENT_FILE_LIST" "IMDB.pdf" "Six Degrees of Kevin Bacon Example" "Six Degrees of Kevin Bacon Example" )
+install( FILES ${DOCUMENT_BUILD_DIR}/IMDB.pdf DESTINATION ${DOCUMENT_DOWNLOAD_DIR} COMPONENT documentation )
