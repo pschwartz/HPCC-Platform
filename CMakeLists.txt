@@ -300,5 +300,13 @@ endif()
 ## the hpcc platform.
 ###
 
-Install ( FILES ${HPCC_SOURCE_DIR}/${LICENSE_FILE} DESTINATION ${OSSDIR} COMPONENT platform )
+Install ( FILES ${HPCC_SOURCE_DIR}/${LICENSE_FILE} DESTINATION ${OSSDIR} COMPONENT common )
 include (CPack)
+
+if ( USE_COMPONENTS )
+    cpack_add_component(common DISPLAY_NAME Common DESCRIPTION "HPCC Common libraries" REQUIRED )
+    cpack_add_component(platform DISPLAY_NAME Platform DESCRIPTION "HPCC Platform binaries" DEPENDS common )
+    cpack_add_component(clienttools DISPLAY_NAME "Client Tools" DESCRIPTION "HPCC Client Tools binaries" DEPENDS common )
+    cpack_add_component(documentation DISPLAY_NAME Documentation DESCRIPTION "HPCC Documentation" )
+    cpack_add_component(hdfsstream DISPLAY_NAME "HDFS Steam" DESCRIPTION "HPCC HDFS Streaming binaries" )
+endif()
